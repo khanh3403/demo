@@ -14,7 +14,8 @@ class DanhBaItemView extends StatelessWidget {
   final String? zalo;
   final String? email;
   final String? gioiTinh;
-  final Function()? onTap;
+  final String? ma;
+  final Function(String?)? onTap;
 
   const DanhBaItemView({
     Key? key,
@@ -27,14 +28,15 @@ class DanhBaItemView extends StatelessWidget {
     this.zalo,
     this.email,
     this.gioiTinh,
+    this.ma,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Color avatarColor = gioiTinh == 'Nam' ? AppColors.blue : AppColors.pink;
+    Color avatarColor = AppColors.blueVNPT;
 
     return InkWellWidget(
-      onPress: onTap,
+      onPress: () => onTap?.call(ma),
       child: Card(
         elevation: 6,
         margin: const EdgeInsets.all(10.0),

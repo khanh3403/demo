@@ -12,9 +12,15 @@ class NsInfo {
   String? dienThoai;
   String? email;
   bool? deleted;
+  String? donVi;
   String? chucVu;
   String? phongBan;
   String? toCongTac;
+  String? cmt;
+  String? ngayCmt;
+  String? noiCmt;
+  String? taiKhoan;
+  String? nganHang;
 
   NsInfo(
       {this.id,
@@ -32,7 +38,13 @@ class NsInfo {
       this.deleted,
       this.chucVu,
       this.phongBan,
-      this.toCongTac});
+      this.donVi,
+      this.toCongTac,
+      this.cmt,
+      this.ngayCmt,
+      this.noiCmt,
+      this.taiKhoan,
+      this.nganHang});
 
   NsInfo.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -51,6 +63,12 @@ class NsInfo {
     chucVu = json["chucVu"];
     phongBan = json["phongBan"];
     toCongTac = json["toCongTac"];
+    donVi=json["donVi"];
+    cmt=json["cmt"];
+    ngayCmt=json["ngayCmt"];
+    noiCmt=json["noiCmt"];
+    taiKhoan=json["taiKhoan"];
+    nganHang=json["nganHang"];
   }
 
   Map<String, dynamic> toJson() {
@@ -71,6 +89,12 @@ class NsInfo {
     _data["chucVu"] = chucVu;
     _data["phongBan"] = phongBan;
     _data["toCongTac"] = toCongTac;
+    _data["donVi"]=donVi;
+    _data["cmt"] = cmt;
+    _data["ngayCmt"]=ngayCmt;
+    _data["noiCmt"]=noiCmt;
+    _data["taiKhoan"]=taiKhoan;
+    _data["nganHang"]=nganHang;
     return _data;
   }
 }

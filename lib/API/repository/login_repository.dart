@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:salesoft_hrm/pages/Home/home_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService extends GetxService {
@@ -22,6 +23,7 @@ class AuthService extends GetxService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', response.body);
       await prefs.setString('ma', ma);
+      Get.find<HomeController>().fetchUserInfo();
       return true;
     } else {
       print('Đăng nhập không thành công: ${response.body}');

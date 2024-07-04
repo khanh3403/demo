@@ -3,9 +3,16 @@ import 'package:salesoft_hrm/API/provider/danhba_provider.dart';
 import 'package:salesoft_hrm/API/repository/danhba_repository.dart';
 import 'package:salesoft_hrm/bottom_menu.dart';
 import 'package:salesoft_hrm/main_controller.dart';
+import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/KhenThuong&Kyluat/ktkl_detail_page.dart';
+import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/QTCongTac/congtac_detail_page.dart';
+import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/Qtluong/Qtluong_detail_page.dart';
+import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/danhba_detail_page.dart';
+import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/information_dt_page.dart';
+import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/quanhe/quanhe_dt_page.dart';
 import 'package:salesoft_hrm/pages/DanhBa/danhba_page.dart';
 import 'package:salesoft_hrm/pages/HoSo/DanhMucHoSo/KhenThuong&KyLuat/khenthuong_kyluat_page.dart';
 import 'package:salesoft_hrm/pages/HoSo/DanhMucHoSo/QTCongTac/congtac_page.dart';
+import 'package:salesoft_hrm/pages/HoSo/DanhMucHoSo/QTLuong/Qtluong_page.dart';
 import 'package:salesoft_hrm/pages/HoSo/DanhMucHoSo/infomation_page.dart';
 import 'package:salesoft_hrm/pages/HoSo/hoso_page.dart';
 import 'package:salesoft_hrm/pages/ChamCong/chamcong_page.dart';
@@ -19,9 +26,17 @@ enum ERouter {
   nghiPhep,
   danhBa,
   information,
+  information_dt,
   quanhe,
+  quanhe_dt,
   qtCongTac,
+  qtCongTac_dt,
   ktkl,
+  ktkl_dt,
+  luong,
+  luong_dt,
+  danhba_dt,
+  xetduyet
 }
 
 extension ERouterExt on ERouter {
@@ -45,6 +60,22 @@ extension ERouterExt on ERouter {
         return "/qtCongTac";
       case ERouter.ktkl:
         return "/khenthuongkyluat";
+      case ERouter.luong:
+        return "/luong";
+      case ERouter.danhba_dt:
+        return "/danhba_dt";
+      case ERouter.information_dt:
+        return "/infomation_dt";
+      case ERouter.quanhe_dt:
+        return "/quanhe_dt";
+      case ERouter.luong_dt:
+        return "/luong_dt";
+      case ERouter.qtCongTac_dt:
+        return "/qtCongTac_dt";
+      case ERouter.ktkl_dt:
+        return "/khenthuongkyluat_dt";
+        case ERouter.xetduyet:
+        return "/xet_duyet";
       default:
         return "/";
     }
@@ -86,7 +117,39 @@ class RouterPage {
     GetPage(
       name: ERouter.ktkl.name,
       page: () => KTKLPage(),
-    )
+    ),
+    GetPage(
+      name: ERouter.luong.name,
+      page: () => LuongPage(),
+    ),
+    GetPage(
+      name: ERouter.danhba_dt.name,
+      page: () => const danhbaDtPage(),
+    ),
+    GetPage(
+      name: ERouter.information_dt.name,
+      page: () => const InformationDtPage(),
+    ),
+    GetPage(
+      name: ERouter.quanhe_dt.name,
+      page: () => QuanHeDtPage(),
+    ),
+    GetPage(
+      name: ERouter.luong_dt.name,
+      page: () => LuongDtPage(),
+    ),
+    GetPage(
+      name: ERouter.qtCongTac_dt.name,
+      page: () => CongTacDtPage(),
+    ),
+    GetPage(
+      name: ERouter.ktkl_dt.name,
+      page: () => KTKLDTPage(),
+    ),
+    // GetPage(
+    //   name:ERouter.xetduyet.name,
+    //   page:()=>MapSample(),
+    // )
   ];
 }
 

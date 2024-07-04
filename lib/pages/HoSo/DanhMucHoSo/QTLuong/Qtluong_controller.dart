@@ -4,6 +4,7 @@ import 'package:salesoft_hrm/API/provider/Qlluong_provider.dart';
 import 'package:salesoft_hrm/API/repository/Qlluong_repository.dart';
 import 'package:salesoft_hrm/API/repository/login_repository.dart';
 import 'package:salesoft_hrm/model/Qtluong_model.dart';
+import 'package:intl/intl.dart';
 
 class QtLuongController extends GetxController with StateMixin<Qtluong> {
   RefreshController refreshController =
@@ -16,6 +17,9 @@ class QtLuongController extends GetxController with StateMixin<Qtluong> {
 
   final LuongRepository _LuongRepository =
       LuongRepository(provider: LuongProviderAPI(AuthService()));
+
+  var tuNgay = DateTime.now().obs;
+  var denNgay = DateTime.now().obs;
 
   @override
   void onInit() {
@@ -33,7 +37,8 @@ class QtLuongController extends GetxController with StateMixin<Qtluong> {
     }
   }
 
-  void fetchListContent({bool isLoadMore = false}) async {
+  void fetchListContent(
+      {bool isLoadMore = false, DateTime? fromDate, DateTime? toDate}) async {
     if (!isLoadMore) {
       pageIndex = 1;
       contentDisplay = null;
@@ -44,6 +49,9 @@ class QtLuongController extends GetxController with StateMixin<Qtluong> {
       pageSize: pageSize,
       pageIndex: pageIndex,
       ma: ma,
+      fromDate:
+          fromDate != null ? DateFormat('yyyy-MM-dd').format(fromDate) : '',
+      toDate: toDate != null ? DateFormat('yyyy-MM-dd').format(toDate) : '',
     );
 
     print('Kết quả API: $result');
@@ -71,5 +79,11 @@ class QtLuongController extends GetxController with StateMixin<Qtluong> {
         change(null, status: RxStatus.empty());
       }
     }
+  }
+
+  void setTimePeriod(DateTime start, DateTime end) {
+    tuNgay.value = start;
+    denNgay.value = end;
+    fetchListContent(fromDate: start, toDate: end);
   }
 }

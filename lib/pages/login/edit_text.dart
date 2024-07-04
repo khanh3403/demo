@@ -31,7 +31,9 @@ class EditText extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.orBgr
+              ),
         ),
         AppConstant.spaceVerticalSmallMedium,
         TextField(

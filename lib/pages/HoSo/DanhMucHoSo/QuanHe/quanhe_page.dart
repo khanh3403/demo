@@ -16,7 +16,7 @@ class QuanHePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButtonWidget(),
-        backgroundColor: AppColors.blue,
+        backgroundColor: AppColors.blueVNPT,
         centerTitle: false,
         elevation: 0,
         title: const TitleAppBarWidget(title: "Quan hệ gia đình"),

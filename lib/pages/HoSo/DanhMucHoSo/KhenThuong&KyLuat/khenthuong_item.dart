@@ -57,20 +57,16 @@ class KhenThuongItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Mã nhân sự', text2: nhanSu ?? ''),
+              RowHoSo(text1: 'Số QĐ', text2: soQd ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Số quyết định', text2: soQd ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
-              RowHoSo(text1: 'Cấp quyết định', text2: capQd ?? ''),
+              RowHoSo(text1: 'Cấp QĐ', text2: capQd ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
               RowHoSo(
-                  text1: 'Ngày quyết định', text2: formatDate(ngayQd) ?? ''),
+                  text1: 'Ngày QĐ', text2: formatDate(ngayQd) ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
@@ -95,14 +91,11 @@ class KhenThuongItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Số tiền', text2: capQd ?? ''),
+              RowHoSo(text1: 'Số tiền', text2: formatCurrency(soTien) ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Ghi chú', text2: ghiChu ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+            
             ],
           ),
         )

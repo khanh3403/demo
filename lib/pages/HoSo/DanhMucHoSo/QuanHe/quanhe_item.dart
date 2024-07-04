@@ -91,10 +91,7 @@ class QuanHeItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Ghi chú', text2: ghiChu ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+            
             ],
           ),
         )

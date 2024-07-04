@@ -13,6 +13,8 @@ class AppColors {
   static const blue150 = Color(0xFFADE2FF);
   static const blue200 = Color(0xFF53B5E9);
   static const blue400 = Color(0xFF2696D2);
+  static const blueVNPT = Color.fromRGBO(76, 185, 206, 1);
+  static const blueVNPT2 = Color(0xFF006382);
 
   static const turquoise = Color(0xFF0CA6A2);
 

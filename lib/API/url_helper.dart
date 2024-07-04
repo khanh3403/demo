@@ -13,4 +13,10 @@ class URLHelper {
   static const String NS_khenthuong = "NhanSuKT/GetListByCode";
   static const String NS_kyluat = "NhanSuKL/GetListByCode";
   static const String NS_qlLuong = "NhanSuQTL/GetListByCode";
+  static const String NS_InforUpdate = "NhanSu/Update";  
+  static const String NS_NotApproved ="NhanSu/CheckExistsUpdate";
+  static const String DM_NganHang="DanhMuc/GetList";
+  static const String NS_Token="Token/Create";
+  static const String DM_DiaDiem="DiaDiem/GetListByCode";
+  static const String DM_CaLam="CaLamViec/GetListByCode";
 }

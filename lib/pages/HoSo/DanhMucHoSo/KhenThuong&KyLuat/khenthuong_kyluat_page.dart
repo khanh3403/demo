@@ -19,7 +19,7 @@ class KTKLPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButtonWidget(),
-        backgroundColor: AppColors.blue,
+        backgroundColor: AppColors.blueVNPT,
         centerTitle: false,
         elevation: 0,
         title: const TitleAppBarWidget(title: "Khen thưởng & kỷ luật"),
@@ -39,7 +39,7 @@ class KTKLPage extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(
-              height: AppConstant.getScreenSizeWidth(context) * 0.03,
+              height: AppConstant.getScreenSizeWidth(context) * 0.01,
             ),
             controller.obx(
               (state) => ListView.builder(
@@ -77,7 +77,7 @@ class KTKLPage extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(
-              height: AppConstant.getScreenSizeWidth(context) * 0.03,
+              height: AppConstant.getScreenSizeWidth(context) * 0.01,
             ),
             controller2.obx(
               (state) => ListView.builder(

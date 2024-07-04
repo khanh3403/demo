@@ -56,10 +56,7 @@ class CongTacTrItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Mã nhân sự', text2: nhansu ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+              
               RowHoSo(text1: 'Đơn vị', text2: donVi ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
@@ -72,30 +69,18 @@ class CongTacTrItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Mức lương', text2: mucLuong?.toString() ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+              
               RowHoSo(text1: 'Kiêm nhiệm', text2: kiemNhiem ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Từ ngày', text2: formatDate(tuNgay) ?? ''),
+              RowHoSo(text1: 'Thời gian', text2: formatDate(tuNgay) +' - '+formatDate(denNgay) ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Đến ngày', text2: formatDate(denNgay) ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
-              RowHoSo(text1: 'Thời gian', text2: formatDate(thoiGian) ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
-              RowHoSo(text1: 'Ghi chú', text2: ghiChu ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+          
+              
+              
             ],
           ),
         )
@@ -169,10 +154,7 @@ class CongTacItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Mã nhân sự', text2: nhanSu ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+             
               RowHoSo(text1: 'Công ty', text2: congTy ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
@@ -185,14 +167,11 @@ class CongTacItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Tổ công tác', text2: toCongTac ?? ''),
+              RowHoSo(text1: 'Bộ phận', text2: toCongTac ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Chuyên Ngành', text2: chuyenNganh ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+             
               RowHoSo(text1: 'Chức vụ', text2: chucVu ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
@@ -201,24 +180,22 @@ class CongTacItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Số quyết định', text2: soQd ?? ''),
+             
+           
+              RowHoSo(text1: 'Loại QĐ', text2: loaiQd ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(
-                  text1: 'Ngày quyết định', text2: formatDate(ngayQd) ?? ''),
+              RowHoSo(text1: 'Số QĐ', text2: soQd ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Loại quyết định', text2: loaiQd ?? ''),
+                 RowHoSo(
+                  text1: 'Ngày QĐ', text2: formatDate(ngayQd) ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Mức lương', text2: mucLuong?.toString() ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
-              RowHoSo(text1: 'Từ ngày', text2: formatDate(tuNgay) ?? ''),
+              RowHoSo(text1: 'Ngày hiệu lực', text2: formatDate(tuNgay) ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
@@ -226,14 +203,8 @@ class CongTacItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Thời gian', text2: formatDate(thoiGian) ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
-              RowHoSo(text1: 'Ghi chú', text2: ghiChu ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+              
+             
             ],
           ),
         )

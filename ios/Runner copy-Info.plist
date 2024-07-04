@@ -26,28 +26,19 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FLTEnableImpeller</key>
 	<false/>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<false/>
-	<key>FirebaseDeepLinkingAutoHandlingEnabled</key>
-	<false/>
-	<key>FirebaseMessagingAutoInitEnabled</key>
-	<true/>
-	<key>FirebaseMessagingDelegateProxyEnabled</key>
-	<false/>
-	<key>FirebaseScreenReportingEnabled</key>
-	<false/>
-	<key>FirebaseServiceInfoFilename</key>
-	<string>GoogleService-Info</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUsageDescription</key>
-	<string>App app wants to access your location to get address</string>
+	<string>App app want's to access your location to get address</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>App app want's to access your location to get address</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App app wants to access your location to get address</string>
+	<string>App app want's to access your location to get address</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App app wants to access your location to get address</string>
+	<string>App app want's to access your location to get address</string>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>Enable notifications to receive important updates and alerts.</string>
+<string>Enable notifications to receive important updates and alerts.</string>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -73,5 +64,21 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+    <false/>
+    <key>FirebaseScreenReportingEnabled</key>
+    <false/>
+    <key>FirebaseDeepLinkingAutoHandlingEnabled</key>
+    <false/>
+    <key>FirebaseMessagingAutoInitEnabled</key>
+    <true/>
+    <key>FirebaseMessagingDelegateProxyEnabled</key>
+    <false/>
+    <key>FirebaseServiceInfoFilename</key>
+    <string>GoogleService-Info</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+    </array>
 </dict>
 </plist>

@@ -22,8 +22,8 @@ class HocVanRepository implements IHocVanRepository {
     required int pageIndex,
   }) async {
     try {
-      final response = await provider.getHocVan(
-          pageSize: pageSize, pageIndex: pageIndex, ma: ma);
+      final response =
+          await provider.getHocVan(pageSize: pageSize, pageIndex: pageIndex);
       if (response != null) {
         if (response is Map<String, dynamic>) {
           return hocvan.fromJson(response);

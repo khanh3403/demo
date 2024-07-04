@@ -17,11 +17,7 @@ class MainController extends GetxController with StateMixin<bool> {
   @override
   void onInit() {
     super.onInit();
-
-    
-   
-
-    //getPort();
+      pageIndex.value = 0;
     getAppInfo();
   }
 

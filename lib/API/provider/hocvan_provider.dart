@@ -3,8 +3,7 @@ import 'package:salesoft_hrm/API/repository/login_repository.dart';
 import 'package:salesoft_hrm/API/url_helper.dart';
 
 abstract class IHocVanProvider {
-  Future<dynamic> getHocVan(
-      {required String ma, required int pageSize, required int pageIndex});
+  Future<dynamic> getHocVan({required int pageSize, required int pageIndex});
 }
 
 class HocVanProviderAPI implements IHocVanProvider {
@@ -13,9 +12,7 @@ class HocVanProviderAPI implements IHocVanProvider {
   HocVanProviderAPI(this.authService);
   @override
   Future<dynamic> getHocVan(
-      {required String ma,
-      required int pageSize,
-      required int pageIndex}) async {
+      {required int pageSize, required int pageIndex}) async {
     final maFromPrefs = await authService.ma;
 
     final urlEndPoint =

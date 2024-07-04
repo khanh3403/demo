@@ -46,7 +46,7 @@ class Data {
   String? noiDung;
   String? nguoiKy;
   String? ghiChu;
-  String? thoiGian;
+  int? thoiGian;
   double? soTien;
 
   Data(

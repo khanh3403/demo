@@ -4,9 +4,12 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:salesoft_hrm/common/app_colors.dart';
 import 'package:salesoft_hrm/common/app_constant.dart';
+import 'package:salesoft_hrm/common/format_date.dart';
 import 'package:salesoft_hrm/pages/HoSo/hoso_body.dart';
 import 'package:salesoft_hrm/pages/Home/home_controller.dart';
-import 'package:salesoft_hrm/widgets/appbar_container_widget.dart';
+import 'package:salesoft_hrm/resources/app_resource.dart';
+import 'package:salesoft_hrm/widgets/component/back_button_widget.dart';
+import 'package:salesoft_hrm/widgets/component/title_appbar_widget.dart';
 
 class HoSoPage extends StatelessWidget {
   const HoSoPage({Key? key}) : super(key: key);
@@ -14,25 +17,33 @@ class HoSoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find<HomeController>();
-    return Stack(
-      children: [
-        const AppBarContainerWidget(
-          title: Text(
-            'Hồ Sơ',
-            style: TextStyle(color: Colors.white),
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButtonWidget(),
+        backgroundColor: AppColors.blueVNPT,
+        centerTitle: false,
+        elevation: 0,
+        title: const TitleAppBarWidget(title: "Hồ sơ nhân sự"),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(AppResource.icBackground),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          body: HoSoBody(),
-        ),
-        Positioned(
-          top: AppConstant.getScreenSizeHeight(context) / 8,
-          left: 0,
-          right: 0,
-          child: Container(
+
+          Container(
+            padding: EdgeInsets.only(
+              top: AppConstant.getScreenSizeHeight(context) * 0.02,
+            ),
             color: Colors.transparent,
-            child: Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width - 80,
-                height: 120,
+            child: Column(children: [
+              SizedBox(
+                width: AppConstant.getScreenSizeWidth(context) * 0.8,
                 child: Card(
                   elevation: 6,
                   color: Colors.white,
@@ -42,11 +53,8 @@ class HoSoPage extends StatelessWidget {
                       children: [
                         Obx(() {
                           Color avatarColor;
-                          if (homeController.gioiTinh.value == "Nam") {
-                            avatarColor = Colors.blue;
-                          } else {
-                            avatarColor = Colors.pink;
-                          }
+                        
+                            avatarColor = AppColors.blueVNPT;
 
                           return Container(
                             width:
@@ -84,8 +92,20 @@ class HoSoPage extends StatelessWidget {
                                     ),
                                   )),
                               AppConstant.spaceVerticalSmallExtra,
-                              Obx(() => Text(
-                                    'Chức vụ: ${homeController.chucVu.value} ',
+
+                                   Obx(() => Text(
+                                    'Ngày sinh: ${formatDate(homeController.ngaySinh.value)}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          height: 1.5,
+                                        ),
+                                  )),
+                              AppConstant.spaceVerticalSmallExtra,
+
+                                   Obx(() => Text(
+                                    'Phòng: ${homeController.phongBan.value} ',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall
@@ -95,7 +115,7 @@ class HoSoPage extends StatelessWidget {
                                   )),
                               AppConstant.spaceVerticalSmallExtra,
                               Obx(() => Text(
-                                    'Phòng: ${homeController.phongBan.value} ',
+                                    'Chức vụ: ${homeController.chucVu.value} ',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall
@@ -103,6 +123,7 @@ class HoSoPage extends StatelessWidget {
                                           height: 1.5,
                                         ),
                                   )),
+                             
                             ],
                           ),
                         ),
@@ -111,11 +132,17 @@ class HoSoPage extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+              SizedBox(
+                height: AppConstant.getScreenSizeHeight(context) * 0.05,
+              ),
+              const HoSoBody(),
+            ]),
           ),
-        ),
+
 //
-      ],
+        ],
+      ),
     );
+//     return
   }
 }

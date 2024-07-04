@@ -9,3 +9,11 @@ String formatDate(String? date) {
     return date;
   }
 }
+
+String formatCurrency(double? amount,
+    {String locale = 'vi_VN', String symbol = '₫'}) {
+  if (amount == null) return '';
+  final NumberFormat currencyFormatter =
+      NumberFormat.currency(locale: locale, symbol: symbol);
+  return currencyFormatter.format(amount);
+}

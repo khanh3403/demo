@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:salesoft_hrm/API/provider/danhba_provider.dart';
 import 'package:salesoft_hrm/API/repository/danhba_repository.dart';
@@ -9,7 +8,7 @@ import 'package:salesoft_hrm/common/app_constant.dart';
 import 'package:salesoft_hrm/main_controller.dart';
 import 'package:salesoft_hrm/pages/DanhBa/danhba_page.dart';
 import 'package:salesoft_hrm/pages/Home/home_page.dart';
-import 'package:salesoft_hrm/pages/login/login_page.dart';
+import 'package:salesoft_hrm/pages/TaiKhoan/taikhoan_page.dart';
 import 'package:salesoft_hrm/resources/app_resource.dart';
 import 'package:salesoft_hrm/widgets/inkwell_widget.dart';
 
@@ -32,37 +31,77 @@ class MainPage extends StatelessWidget {
       bottom: false,
       child: Obx(() {
         return Scaffold(
-          appBar: controller.pageIndex.value == 0
-              ? null
-              : AppBar(
-                  title: _TitleAppBarWidget2(controller: controller),
-                  toolbarHeight: 60,
-                  backgroundColor: Colors.white.withOpacity(0.8),
-                  elevation: 0,
-                  leading: Container(),
-                ),
-          body: Stack(
-            children: [
-              _getPage(controller.pageIndex.value),
-            ],
+          body: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(AppResource.icBackground),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Stack(
+              children: [
+                _getPage(controller.pageIndex.value),
+              ],
+            ),
           ),
-          bottomNavigationBar: NavigationBar(
-              height: AppConstant.getScreenSizeHeight(context) * 0.07,
-              elevation: 0,
-              selectedIndex: controller.pageIndex.value,
-              onDestinationSelected: (index) =>
-                  controller.pageIndex.value = index,
-              destinations: const [
-                NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-                NavigationDestination(
-                    icon: Icon(Icons.contacts), label: 'Danh bạ'),
-                NavigationDestination(
-                    icon: Icon(Icons.notifications), label: 'Thông báo'),
-                NavigationDestination(
-                    icon: Icon(Icons.person), label: 'Tài khoản'),
-              ]),
+          bottomNavigationBar: controller.obx((state) {
+            return _bottomAppBarView(controller);
+          }),
         );
       }),
+    );
+  }
+
+  BottomAppBar _bottomAppBarView(MainController controller) {
+    return BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      color: AppColors.greyBackground,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: AppConstant.kSpaceHorizontalMedium,
+          right: AppConstant.kSpaceHorizontalMedium,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            _NavigationItemView(
+              canShowBadge: false,
+              label: 'Trang chủ',
+              assetName: AppResource.icHome,
+              assetColor: AppColors.grey,
+              index: 0,
+              onPress: () => controller.pageIndex.value = 0,
+            ),
+            _NavigationItemView(
+              canShowBadge: false,
+              label: 'Danh bạ',
+              index: 1,
+              assetName: AppResource.icPlay,
+              onPress: () => controller.pageIndex.value = 1,
+            ),
+            controller.obx((state) {
+              return _NavigationItemView(
+                canShowBadge: true,
+                label: 'Thông báo',
+                index: 2,
+                badgeContent: controller.listNotificationUnread.length,
+                assetName: AppResource.icNotification,
+                onPress: () async {
+                  controller.pageIndex.value = 2;
+                },
+              );
+            }),
+            _NavigationItemView(
+              canShowBadge: false,
+              label: 'Tài khoản',
+              index: 3,
+              assetName: AppResource.icUser,
+              onPress: () => controller.pageIndex.value = 3,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -75,143 +114,122 @@ class MainPage extends StatelessWidget {
       case 2:
         return Center(child: Text('Notification Page'));
       case 3:
-        return Center(child: Text('Xét Duyệt Page'));
+        return TaiKhoanPage();
       default:
         return Center(child: Text('Unknown Page'));
     }
   }
 }
 
-class _TitleAppBarWidget2 extends StatelessWidget {
-  final MainController controller;
-  final GlobalKey _iconKey = GlobalKey();
-
-  _TitleAppBarWidget2({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const _LeadingTitleView(),
-        SizedBox(
-          width: AppConstant.getScreenSizeWidth(context) * 0.3,
-        ),
-        _CircleIconWidget(
-          key: _iconKey,
-          imageAssetName: AppResource.icMenu,
-          onPress: () {
-            final RenderBox renderBox =
-                _iconKey.currentContext!.findRenderObject() as RenderBox;
-            final position = renderBox.localToGlobal(Offset.zero);
-            _showCustomDialog(context, position, renderBox.size);
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _LeadingTitleView extends StatelessWidget {
-  const _LeadingTitleView({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      AppResource.icLogoVNPT,
-    );
-  }
-}
-
-class _CircleIconWidget extends StatelessWidget {
-  final String imageAssetName;
+class _NavigationItemView extends StatelessWidget {
   final Function()? onPress;
+  final String? assetName;
+  final IconData? icon;
+  final Color? assetColor;
+  final String? label;
+  final int? index;
+  final bool? canShowBadge;
+  final int badgeContent;
 
-  const _CircleIconWidget({
+  const _NavigationItemView({
     Key? key,
-    required this.imageAssetName,
     this.onPress,
+    this.assetName,
+    this.icon,
+    this.label,
+    this.assetColor,
+    this.index = -1,
+    this.canShowBadge,
+    this.badgeContent = 0,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return InkWellWidget(
-      onPress: onPress,
-      padding: const EdgeInsets.all(4),
-      borderRadius: 22,
-      child: Image.asset(
-        imageAssetName,
-        fit: BoxFit.fill,
-        width: 28,
-        height: 28,
-      ),
-    );
-  }
-}
+    final MainController controller = Get.find();
 
-void _showCustomDialog(BuildContext context, Offset position, Size iconSize) {
-  OverlayState? overlayState = Overlay.of(context);
-  if (overlayState == null) {
-    return;
-  }
-
-  late OverlayEntry overlayEntry;
-
-  overlayEntry = OverlayEntry(
-    builder: (context) => GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        overlayEntry.remove();
-      },
-      child: Stack(
-        children: [
-          Positioned(
-            left: position.dx + iconSize.width - 200,
-            top: position.dy + iconSize.height,
-            child: Material(
-              elevation: 4.0,
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                width: 200,
-                child: InkWell(
-                  onTap: () {
-                    _logout(context);
-                    overlayEntry.remove();
-                  },
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        flex: 7,
-                        child: Text(
-                          'Đăng xuất',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
+    return Expanded(
+      child: InkWellWidget(
+        borderRadius: 4,
+        padding: EdgeInsets.only(
+          top: 4,
+        ),
+        onPress: onPress,
+        child: SizedBox(
+          height: ScreenUtil().bottomBarHeight > 0 ? 40.h : 60.h,
+          child: Obx(
+            () => Column(
+              children: [
+                Stack(
+                  children: [
+                    _buildIcon(controller),
+                    Visibility(
+                      visible: (canShowBadge == true) && badgeContent != 0,
+                      child: Positioned(
+                        right: 0,
                         child: Container(
-                          alignment: Alignment.center,
-                          child: const Icon(Icons.logout),
+                          constraints: BoxConstraints(
+                            minWidth: 16.r,
+                            minHeight: 16.r,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          child: Center(
+                            child: Text(
+                              badgeContent.toString(),
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              ),
+                AppConstant.spaceVerticalSmall,
+                Text(
+                  label ?? '',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 10.sp,
+                        color: controller.pageIndex.value == index
+                            ? AppColors.blue
+                            : AppColors.grey300,
+                      ),
+                )
+              ],
             ),
           ),
-        ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
-  overlayState.insert(overlayEntry);
-}
-
-void _logout(BuildContext context) {
-  Get.offAll(LoginPage());
+  Widget _buildIcon(MainController controller) {
+    if (assetName?.isNotEmpty == true) {
+      //  if (icon == true) {
+      return Container(
+        alignment: Alignment.center,
+        width: 24.r,
+        height: 24.r,
+        child: Image.asset(
+          assetName ?? '',
+          width: 20.r,
+          height: 20.r,
+          fit: BoxFit.fill,
+          color: controller.pageIndex.value == index
+              ? AppColors.blueVNPT2
+              : AppColors.grey,
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 20.r,
+        height: 20.r,
+      );
+    }
+  }
 }

@@ -44,18 +44,19 @@ class Data {
   String? loaiBang;
   String? chuyenNganh;
   String? quocGia;
-  double? namTn;
+  int? namTn;
 
-  Data(
-      {this.id,
-      this.nhanSu,
-      this.hocVan,
-      this.hocVi,
-      this.truongDt,
-      this.loaiBang,
-      this.chuyenNganh,
-      this.quocGia,
-      this.namTn,});
+  Data({
+    this.id,
+    this.nhanSu,
+    this.hocVan,
+    this.hocVi,
+    this.truongDt,
+    this.loaiBang,
+    this.chuyenNganh,
+    this.quocGia,
+    this.namTn,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json["id"];

@@ -11,20 +11,19 @@ class HocVanItemView extends StatelessWidget {
   final String? loaiBang;
   final String? chuyenNganh;
   final String? quocGia;
-  final double? namTn;
+  final int? namTn;
 
-  const HocVanItemView(
-      {Key? key,
-      this.nhanSu,
-      this.hocVan,
-      this.hocVi,
-      this.truongDt,
-      this.loaiBang,
-      this.chuyenNganh,
-      this.quocGia,
-      this.namTn,
-      })
-      : super(key: key);
+  const HocVanItemView({
+    Key? key,
+    this.nhanSu,
+    this.hocVan,
+    this.hocVi,
+    this.truongDt,
+    this.loaiBang,
+    this.chuyenNganh,
+    this.quocGia,
+    this.namTn,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -52,10 +51,7 @@ class HocVanItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Mã nhân sự', text2: nhanSu ?? ''),
-              SizedBox(
-                height: AppConstant.getScreenSizeHeight(context) * 0.01,
-              ),
+             
               RowHoSo(text1: 'Học vấn', text2: hocVan ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
@@ -64,7 +60,7 @@ class HocVanItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Trường đào tạo', text2: truongDt ?? ''),
+              RowHoSo(text1: 'Trường', text2: truongDt ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
@@ -76,15 +72,14 @@ class HocVanItemView extends StatelessWidget {
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Quốc gia', text2:quocGia ?? ''),
+              RowHoSo(text1: 'Quốc gia', text2: quocGia ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-              RowHoSo(text1: 'Năm tốt nghiệp', text2: namTn?.toString() ?? ''),
+              RowHoSo(text1: 'Năm TN', text2: namTn?.toString() ?? ''),
               SizedBox(
                 height: AppConstant.getScreenSizeHeight(context) * 0.01,
               ),
-             
             ],
           ),
         )

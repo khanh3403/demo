@@ -10,6 +10,21 @@ class DanhBaController extends GetxController with StateMixin<Danhba> {
   Danhba? originalContentDisplay;
   int pageIndex = 1;
   int pageSize = 1;
+  String removeDiacritics(String str) {
+  final withDiacritics = 'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ'
+      'ÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ';
+  final withoutDiacritics = 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd'
+      'AAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYD';
+
+  return str.split('').map((char) {
+    final index = withDiacritics.indexOf(char);
+    if (index != -1) {
+      return withoutDiacritics[index];
+    }
+    return char;
+  }).join('');
+}
+
 
   final IDanhBaRepository _repository = Get.find();
 
@@ -43,7 +58,6 @@ class DanhBaController extends GetxController with StateMixin<Danhba> {
 
       refreshController.loadComplete();
       pageIndex += 1;
-
       if (contentDisplay!.data!.isEmpty) {
         change(contentDisplay, status: RxStatus.empty());
       } else {
@@ -53,16 +67,21 @@ class DanhBaController extends GetxController with StateMixin<Danhba> {
       refreshController.loadNoData();
     }
   }
-  void searchDanhBa(String query) {
-    if (query.isEmpty) {
-      contentDisplay = originalContentDisplay;
-    } else {
-      final filteredData = originalContentDisplay?.data?.where((item) {
-        final name = '${item.hoDem} ${item.ten}'.toLowerCase();
-        return name.contains(query.toLowerCase());
-      }).toList();
-      contentDisplay = Danhba(data: filteredData);
-    }
-    change(contentDisplay, status: RxStatus.success());
+
+void searchDanhBa(String query) { 
+  if (query.isEmpty) {
+    contentDisplay = originalContentDisplay;
+  } else {
+    final normalizedQuery = removeDiacritics(query.toLowerCase());
+    final filteredData = originalContentDisplay?.data?.where((item) {
+      final name = removeDiacritics('${item.hoDem} ${item.ten}'.toLowerCase());
+      final id = item.ma?.toLowerCase() ?? '';
+      return name.contains(normalizedQuery) || id.startsWith(normalizedQuery);
+    }).toList();
+    contentDisplay = Danhba(data: filteredData);
   }
+  change(contentDisplay, status: RxStatus.success());
+}
+
+
 }

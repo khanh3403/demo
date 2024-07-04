@@ -4,7 +4,7 @@ class AppResource {
   static const String icMainActon = 'assets/images/ic_main_action.png';
   static const String icNotification = 'assets/images/ic_notification.png';
   static const String icUser = 'assets/images/ic_user.png';
-  static const String icPlay = 'assets/images/ic_play.png';
+  static const String icPlay = 'assets/images/ic_sodanhba.png';
   static const String icTap = 'assets/images/tap.png';
 
   static const String icMessenger = 'assets/images/ic_messenger.png';
@@ -13,8 +13,16 @@ class AppResource {
   static const String icYoutube = 'assets/images/ic_youtube.png';
   static const String icMic = 'assets/images/ic_mic.png';
   static const String icBangLuong = 'assets/images/ic_bangluong.png';
-  static const String icNghiLe = 'assets/images/ic_nghile.png';
-
+  static const String icNghiLe = 'assets/images/ic_nghiphep.png';
+  static const String icProfile = 'assets/images/ic_contract.png';
+  static const String icApproval = 'assets/images/approval-icon.png';
+  static const String icSupport = 'assets/images/ic_support.png';
+  static const String icLylich = 'assets/images/ic_lylich.png';
+  static const String icFamily = 'assets/images/qhe_family.png';
+  static const String icCash = 'assets/images/ic_cashflow.png';
+  static const String icWorking = 'assets/images/ic_working.png';
+  static const String icReward = 'assets/images/ic_reward.png';
+  static const String icBackground = 'assets/images/background_pmc.png';
   static const String icMarketing = 'assets/images/ic_marketing.png';
   static const String icSoftware = 'assets/images/ic_software.png';
   static const String icVideoFunction = 'assets/images/ic_video_function.png';
@@ -22,6 +30,9 @@ class AppResource {
   static const String icDanhBa = 'assets/images/pngegg.png';
   static const String icLogoVNPT = 'assets/images/logovnpt.png';
   static const String icbannervnpt = 'assets/images/banner_gioithieu.png';
+  static const String icPMC = 'assets/images/pmc_logo.png';
+  static const String icWarning='assets/images/ic_warning.png';
+  static const String icEdit='assets/images/ic_edit.png';
 
   static const String icCalendar = 'assets/images/ic_calendar.png';
   static const String icFacebook = 'assets/images/ic_facebook.png';

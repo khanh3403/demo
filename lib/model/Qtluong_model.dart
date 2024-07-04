@@ -44,18 +44,18 @@ class Data {
   String? tuNgay;
   String? denNgay;
   String? ngachCc;
-  String? bacCc;
-  int? hsl;
+  double? bacCc;
+  double? hsl;
   double? luongCoBan;
   String? noiDung;
   String? soHd;
   String? hdld;
   String? phuLucHopDong;
-  String? pcTrachNhiem;
-  String? pcLuong;
-  String? pcKhac;
+  double? pcTrachNhiem;
+  double? pcLuong;
+  double? pcKhac;
   bool? bhxh;
-  String? lanKy;
+  int? lanKy;
   String? ghiChu;
 
   Data(
