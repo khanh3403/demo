@@ -26,80 +26,82 @@ class LuongPage extends StatelessWidget {
       ),
       body: Container(
         padding: EdgeInsets.only(
-            left: AppConstant.getScreenSizeWidth(context) * 0.05),
+          left: AppConstant.getScreenSizeWidth(context) * 0.05,
+          right: AppConstant.getScreenSizeWidth(context) * 0.05,
+          top: 10,
+        ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 10),
-            const _HeaderFilterTimeWidget(),
+            _HeaderFilterTimeWidget(),
             Expanded(
               child: controller.obx(
-                (state) => ListView.builder(
-                  itemCount: state?.data?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final item = state!.data![index];
-                    return GestureDetector(
-                      onTap: () {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return Container(
-
-        child: SingleChildScrollView(
-          
-            child: QtluongItemView2(
-              
-              soQd: item.soQd,
-              ngayQd: item.ngayQd,
-              loaiQd: item.loaiQd,
-              nhanSu: item.nhanSu,
-              tuNgay: item.tuNgay,
-              denNgay: item.denNgay,
-              ngachCc: item.ngachCc,
-              bacCc: item.bacCc,
-              hsl: item.hsl,
-              luongCoBan: item.luongCoBan,
-              noiDung: item.noiDung,
-              soHd: item.soHd,
-              hdld: item.hdld,
-              phuLucHopDong: item.phuLucHopDong,
-              pcTrachNhiem: item.pcTrachNhiem,
-              pcLuong: item.pcLuong,
-              pcKhac: item.pcKhac,
-              lanKy: item.lanKy,
-              ghiChu: item.ghiChu,
-            ),
-        ),
-      );
-    },
-  );
-},
-
-                      child: QtluongItemView(
-                        soQd: item.soQd,
-                        ngayQd: item.ngayQd,
-                        loaiQd: item.loaiQd,
-                        nhanSu: item.nhanSu,
-                        tuNgay: item.tuNgay,
-                        denNgay: item.denNgay,
-                        ngachCc: item.ngachCc,
-                        bacCc: item.bacCc,
-                        hsl: item.hsl,
-                        luongCoBan: item.luongCoBan,
-                        noiDung: item.noiDung,
-                        soHd: item.soHd,
-                        hdld: item.hdld,
-                        phuLucHopDong: item.phuLucHopDong,
-                        pcTrachNhiem: item.pcTrachNhiem,
-                        pcLuong: item.pcLuong,
-                        pcKhac: item.pcKhac,
-                        lanKy: item.lanKy,
-                        ghiChu: item.ghiChu,
+                (state) => state != null && state.data != null && state.data!.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: state.data!.length,
+                        itemBuilder: (context, index) {
+                          final item = state.data![index];
+                          return GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    child: SingleChildScrollView(
+                                      child: QtluongItemView2(
+                                        soQd: item.soQd,
+                                        ngayQd: item.ngayQd,
+                                        loaiQd: item.loaiQd,
+                                        nhanSu: item.nhanSu,
+                                        tuNgay: item.tuNgay,
+                                        denNgay: item.denNgay,
+                                        ngachCc: item.ngachCc,
+                                        bacCc: item.bacCc,
+                                        hsl: item.hsl,
+                                        luongCoBan: item.luongCoBan,
+                                        noiDung: item.noiDung,
+                                        soHd: item.soHd,
+                                        hdld: item.hdld,
+                                        phuLucHopDong: item.phuLucHopDong,
+                                        pcTrachNhiem: item.pcTrachNhiem,
+                                        pcLuong: item.pcLuong,
+                                        pcKhac: item.pcKhac,
+                                        lanKy: item.lanKy,
+                                        ghiChu: item.ghiChu,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: QtluongItemView(
+                              soQd: item.soQd,
+                              ngayQd: item.ngayQd,
+                              loaiQd: item.loaiQd,
+                              nhanSu: item.nhanSu,
+                              tuNgay: item.tuNgay,
+                              denNgay: item.denNgay,
+                              ngachCc: item.ngachCc,
+                              bacCc: item.bacCc,
+                              hsl: item.hsl,
+                              luongCoBan: item.luongCoBan,
+                              noiDung: item.noiDung,
+                              soHd: item.soHd,
+                              hdld: item.hdld,
+                              phuLucHopDong: item.phuLucHopDong,
+                              pcTrachNhiem: item.pcTrachNhiem,
+                              pcLuong: item.pcLuong,
+                              pcKhac: item.pcKhac,
+                              lanKy: item.lanKy,
+                              ghiChu: item.ghiChu,
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Text('Không có thông tin'),
                       ),
-                    );
-                  },
-                ),
-                onLoading: const Center(child: CircularProgressIndicator()),
-                onEmpty: const Center(child: Text('Không có thông tin')),
+                onLoading: Center(child: CircularProgressIndicator()),
                 onError: (error) => Center(child: Text('Lỗi: $error')),
               ),
             ),
@@ -118,16 +120,14 @@ class _HeaderFilterTimeWidget extends StatelessWidget {
     final QtLuongController controller = Get.find();
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          flex: 15,
           child: Obx(() {
             return FilterWidget(
               textColor: Colors.black,
               title: "Chọn ngày",
-              value:
-                  "${DateFormat('dd/MM/yyyy').format(controller.tuNgay.value)} - ${DateFormat('dd/MM/yyyy').format(controller.denNgay.value)}",
+              value: "${DateFormat('dd/MM/yyyy').format(controller.tuNgay.value)} - ${DateFormat('dd/MM/yyyy').format(controller.denNgay.value)}",
               imageAssetName: AppResource.icCalendar,
               onPress: () async {
                 DateTimeRange? picked = await showDateRangePicker(
@@ -147,6 +147,7 @@ class _HeaderFilterTimeWidget extends StatelessWidget {
             );
           }),
         ),
+        SizedBox(width: AppConstant.getScreenSizeWidth(context) * 0.05),
       ],
     );
   }

@@ -15,125 +15,143 @@ import 'package:salesoft_hrm/widgets/component/back_button_widget.dart';
 import 'package:salesoft_hrm/widgets/component/title_appbar_widget.dart';
 import 'package:salesoft_hrm/widgets/cot_hoso_widget.dart';
 
-class MyInformation extends StatelessWidget {
+class MyInformation extends StatefulWidget {
   const MyInformation({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final HomeController homeController = Get.find<HomeController>();
-    final HocVanController controller = Get.put(HocVanController());
-    bool isValidPhoneNumber(String phone) {
-  final RegExp phoneExp = RegExp(r'^0[0-9]{9}$');
-  return phoneExp.hasMatch(phone);
+  _MyInformationState createState() => _MyInformationState();
 }
 
-bool isValidEmail(String email) {
-  final RegExp emailExp = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-  return emailExp.hasMatch(email);
-}
+class _MyInformationState extends State<MyInformation> {
+  final HomeController homeController = Get.find<HomeController>();
+  final HocVanController controller = Get.put(HocVanController());
 
-void dialogApproved() {
-       final NotApprovedController approvedController=Get.put(NotApprovedController());
+  bool isValidPhoneNumber(String phone) {
+    final RegExp phoneExp = RegExp(r'^0[0-9]{9}$');
+    return phoneExp.hasMatch(phone);
+  }
 
+  bool isValidEmail(String email) {
+    final RegExp emailExp = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    return emailExp.hasMatch(email);
+  }
 
-  approvedController.fetchListContent();
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Đang chờ xét duyệt'),
-        content: Container(
-          width: double.maxFinite,
-          child: Get.find<NotApprovedController>().obx(
-            (state) {
-              if (state == null || state.isEmpty) {
-                return const Center(
-                  child: Text('Không có thông tin'),
-                );
-              }
+  void dialogApproved() {
+    final NotApprovedController approvedController = Get.put(NotApprovedController());
 
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: state.length,
-                itemBuilder: (context, index) {
-                  final item = state[index];
-                  return ApprovedItemView(
-                    cotDuLieu: item.cotDuLieu,
-                    duLieu: item.duLieu,
+    approvedController.fetchListContent();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Đang chờ xét duyệt'),
+          content: Container(
+            width: double.maxFinite,
+            child: Get.find<NotApprovedController>().obx(
+              (state) {
+                if (state == null || state.isEmpty) {
+                  return const Center(
+                    child: Text('Không có thông tin'),
                   );
-                },
-              );
-            },
-            onLoading: const Center(child: CircularProgressIndicator()),
-            onError: (error) => Center(child: Text('Lỗi: $error')),
-          ),
-        ),
-        actions: [
-          
-        ],
-      );
-    },
-  );
-}
+                }
 
-
-    void _showEditDialog(String title, String currentValue, String cot) {
-  final TextEditingController textController = TextEditingController(text: currentValue);
-  final _formKey = GlobalKey<FormState>();
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Thay đổi $title'),
-        content: Form(
-          key: _formKey,
-          child: TextFormField(
-            controller: textController,
-            decoration: InputDecoration(
-              hintText: 'Nhập $title mới',
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: state.length,
+                  itemBuilder: (context, index) {
+                    final item = state[index];
+                    return ApprovedItemView(
+                      cotDuLieu: item.cotDuLieu,
+                      duLieu: item.duLieu,
+                    );
+                  },
+                );
+              },
+              onLoading: const Center(child: CircularProgressIndicator()),
+              onError: (error) => Center(child: Text('Lỗi: $error')),
             ),
-            keyboardType: (title == 'điện thoại') ? TextInputType.phone : TextInputType.emailAddress,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập $title';
-              }
-              if (title == 'điện thoại' && !isValidPhoneNumber(value)) {
-                return 'Số điện thoại không hợp lệ';
-              }
-              if (title == 'email' && !isValidEmail(value)) {
-                return 'Email không hợp lệ';
-              }
-              return null;
-            },
           ),
-        ),
-        actions: [
-          TextButton(
-            child: Text('Hủy'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+          actions: [],
+        );
+      },
+    );
+  }
+
+  void _showEditDialog(String title, String currentValue, String cot) {
+    final TextEditingController textController = TextEditingController(text: currentValue);
+    final _formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Thay đổi $title'),
+          content: Form(
+            key: _formKey,
+            child: Stack(
+              children: [
+                TextFormField(
+                  controller: textController,
+                  decoration: InputDecoration(
+                    hintText: currentValue,
+                    suffixIcon: textController.text.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              setState(() {
+                                textController.clear();
+                              });
+                            },
+                          )
+                        : null,
+                  ),
+                  keyboardType: (title == 'điện thoại') ? TextInputType.phone : TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập $title';
+                    }
+                    if (title == 'điện thoại' && !isValidPhoneNumber(value)) {
+                      return 'Số điện thoại không hợp lệ';
+                    }
+                    if (title == 'email' && !isValidEmail(value)) {
+                      return 'Email không hợp lệ';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
           ),
-          TextButton(
-            child: Text('Xác nhận'),
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                String newValue = textController.text;
-                await homeController.updateUserInfo(cot, newValue);
-                showToast("Đăng ký thay đổi $title thành công");
+          actions: [
+            TextButton(
+              child: Text('Hủy'),
+              onPressed: () {
                 Navigator.of(context).pop();
-              }
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+              },
+            ),
+            TextButton(
+              child: Text('Xác nhận'),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  String newValue = textController.text;
+                  await homeController.updateUserInfo(cot, newValue);
+                  Get.snackbar("Thông báo", "Đăng ký thay đổi $title thành công", snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButtonWidget(),
@@ -144,8 +162,7 @@ void dialogApproved() {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.only(
-              left: AppConstant.getScreenSizeWidth(context) * 0.05),
+          padding: EdgeInsets.only(left: AppConstant.getScreenSizeWidth(context) * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,19 +171,20 @@ void dialogApproved() {
                 height: AppConstant.getScreenSizeWidth(context) * 0.03,
               ),
               Row(
-              children:[
+                children: [
                   const Text(
-                'Thông tin cá nhân',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    'Thông tin cá nhân',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: AppConstant.getScreenSizeWidth(context) * 0.05),
+                  GestureDetector(
+                    onTap: () {
+                      dialogApproved();
+                    },
+                    child: const FaIcon(FontAwesomeIcons.list),
+                  ),
+                ],
               ),
-              SizedBox(width: AppConstant.getScreenSizeWidth(context)*0.05,),
-              GestureDetector(
-                onTap:() {
-                  dialogApproved();
-                },
-                child: const FaIcon(FontAwesomeIcons.list)),
-              ]
-             ),
               SizedBox(
                 height: AppConstant.getScreenSizeWidth(context) * 0.03,
               ),
@@ -191,8 +209,7 @@ void dialogApproved() {
                     ),
                     RowHoSo(
                       text1: 'Họ tên',
-                      text2:
-                          '${homeController.hoDem.value} ${homeController.ten.value}',
+                      text2: '${homeController.hoDem.value} ${homeController.ten.value}',
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
@@ -215,7 +232,7 @@ void dialogApproved() {
                       text1: 'Địa chỉ',
                       icon: Icons.edit,
                       text2: homeController.dcll.value,
-                      onTap: () => _showEditDialog('địa chỉ','', 'DCLL'),
+                      onTap: () => _showEditDialog('địa chỉ', homeController.dcll.value, 'DCLL'),
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
@@ -224,7 +241,7 @@ void dialogApproved() {
                       text1: 'Điện thoại',
                       icon: Icons.edit,
                       text2: homeController.dienThoai.value,
-                      onTap: () => _showEditDialog('điện thoại','', 'DienThoai'),
+                      onTap: () => _showEditDialog('điện thoại', homeController.dienThoai.value, 'DienThoai'),
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
@@ -233,26 +250,26 @@ void dialogApproved() {
                       icon: Icons.edit,
                       text1: 'Email',
                       text2: homeController.email.value,
-                      onTap: () => _showEditDialog('email','', 'Email'),
+                      onTap: () => _showEditDialog('email', homeController.email.value, 'Email'),
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
                     ),
-                      RowHoSo(
+                    RowHoSo(
                       text1: 'Số CMT',
                       text2: homeController.cmt.value,
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
                     ),
-                      RowHoSo(
+                    RowHoSo(
                       text1: 'Nơi cấp',
                       text2: homeController.noiCmt.value,
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
                     ),
-                      RowHoSo(
+                    RowHoSo(
                       text1: 'Ngày cấp',
                       text2: formatDate(homeController.ngayCmt.value),
                     ),
@@ -263,7 +280,7 @@ void dialogApproved() {
                       icon: Icons.edit,
                       text1: 'Tài khoản',
                       text2: homeController.taiKhoan.value,
-                      onTap: () => _showEditDialog('tài khoản','', 'TaiKhoan'),
+                      onTap: () => _showEditDialog('tài khoản', homeController.taiKhoan.value, 'TaiKhoan'),
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
@@ -272,7 +289,7 @@ void dialogApproved() {
                       icon: Icons.edit,
                       text1: 'Ngân hàng',
                       text2: homeController.nganHang.value,
-                      onTap: () => _showEditDialog('ngân hàng','', 'NganHang'),
+                      onTap: () => _showEditDialog('ngân hàng',homeController.nganHang.value, 'NganHang'),
                     ),
                     SizedBox(
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,

@@ -19,4 +19,8 @@ class URLHelper {
   static const String NS_Token="Token/Create";
   static const String DM_DiaDiem="DiaDiem/GetListByCode";
   static const String DM_CaLam="CaLamViec/GetListByCode";
+  static const String DM_DOIMK="NhanSu/ChangePassword";
+  static const String NS_ChamCong="ChamCong/Create";
+  static const String NS_CheckVao="ChamCong/CheckNhanSuCheckIn";
+  static const String NS_CheckRa="ChamCong/CheckNhanSuCheckOut";
 }

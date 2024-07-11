@@ -8,7 +8,7 @@ class AppColors {
   static const greyBackground = Color(0xFFFBFBFB);
 
   static const blue = Color(0xFF0873AC);
-  static const blue50 = Color(0xFFE6EFF4);
+  static const blue50 = Color.fromARGB(255, 249, 249, 249);
   static const blue100 = Color(0xFFE6EFF4);
   static const blue150 = Color(0xFFADE2FF);
   static const blue200 = Color(0xFF53B5E9);

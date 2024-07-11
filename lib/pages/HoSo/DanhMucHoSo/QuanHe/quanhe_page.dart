@@ -21,34 +21,34 @@ class QuanHePage extends StatelessWidget {
         elevation: 0,
         title: const TitleAppBarWidget(title: "Quan hệ gia đình"),
       ),
-      body: Container(
-        padding: EdgeInsets.only(
-            left: AppConstant.getScreenSizeWidth(context) * 0.05),
-        child: controller.obx(
-          (state) => ListView.builder(
-            itemCount: state?.data?.length ?? 0,
-            itemBuilder: (context, index) {
-              final item = state!.data![index];
-              return QuanHeItemView(
-                hoTen: item.hoTen,
-                quanHe: item.quanHe,
-                ngaySinh: item.ngaySinh,
-                diaChi: item.diaChi,
-                ngheNghiep: item.ngheNghiep,
-                maSoThue: item.maSoThue,
-                soCmt: item.soCmt,
-                ngayCmt: item.ngayCmt,
-                noiCmt: item.noiCmt,
-                ghiChu: item.ghiChu,
-              );
-            },
+      body: controller.obx(
+        (state) => ListView.builder(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppConstant.getScreenSizeWidth(context) * 0.05,
+            vertical: 10,
           ),
-          onLoading: const Center(child: CircularProgressIndicator()),
-          onEmpty: const Center(
-            child: Text('Không có thông tin quan hệ'),
-          ),
-          onError: (error) => Center(child: Text('Lỗi: $error')),
+          itemCount: state?.data?.length ?? 0,
+          itemBuilder: (context, index) {
+            final item = state!.data![index];
+            return QuanHeItemView(
+              hoTen: item.hoTen,
+              quanHe: item.quanHe,
+              ngaySinh: item.ngaySinh,
+              diaChi: item.diaChi,
+              ngheNghiep: item.ngheNghiep,
+              maSoThue: item.maSoThue,
+              soCmt: item.soCmt,
+              ngayCmt: item.ngayCmt,
+              noiCmt: item.noiCmt,
+              ghiChu: item.ghiChu,
+            );
+          },
         ),
+        onLoading: const Center(child: CircularProgressIndicator()),
+        onEmpty: const Center(
+          child: Text('Không có thông tin quan hệ'),
+        ),
+        onError: (error) => Center(child: Text('Lỗi: $error')),
       ),
     );
   }

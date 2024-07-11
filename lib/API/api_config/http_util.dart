@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:salesoft_hrm/API/url_helper.dart';
 import 'package:salesoft_hrm/common/app_global.dart';
 import 'package:salesoft_hrm/common/router.dart';
 import 'package:salesoft_hrm/model/base_model.dart';
 import 'package:salesoft_hrm/model/error_model.dart';
+import 'package:http/http.dart' as http; // Import http package for http.Response
 
 class HttpUtil {
   static final HttpUtil _instance = HttpUtil._internal();
@@ -69,7 +69,7 @@ class HttpUtil {
     }
   }
 
-  Future get(
+  Future<dynamic> get(
     String path, {
     dynamic params,
     Options? options,
@@ -92,7 +92,7 @@ class HttpUtil {
   }
 
   /// restful post
-  Future post(
+  Future<dynamic> post(
     String path, {
     dynamic params,
     Options? options,
@@ -113,7 +113,7 @@ class HttpUtil {
   }
 
   /// restful put 操作
-  Future put(
+  Future<dynamic> put(
     String path, {
     dynamic params,
     Options? options,
@@ -133,8 +133,36 @@ class HttpUtil {
     return response.data;
   }
 
+  Future<http.Response> put2(
+    String path, {
+    dynamic params,
+    Options? options,
+  }) async {
+    Options requestOptions = options ?? Options();
+
+    var response = await dio.put(
+      path,
+      data: params,
+      options: requestOptions,
+      cancelToken: cancelToken,
+    );
+    checkShouldLogout(response.data);
+
+    // Ensure that statusCode is non-null
+    final statusCode = response.statusCode ?? 0;
+
+    // Convert Map<String, List<String>> to Map<String, String>
+    final headers = response.headers.map.map((key, value) => MapEntry(key, value.join(',')));
+
+    return http.Response(
+      response.data.toString(),
+      statusCode,
+      headers: headers,
+    );
+  }
+
   /// restful patch
-  Future patch(
+  Future<dynamic> patch(
     String path, {
     dynamic params,
     Options? options,
@@ -151,7 +179,7 @@ class HttpUtil {
   }
 
   /// restful delete
-  Future delete(
+  Future<dynamic> delete(
     String path, {
     dynamic params,
     Options? options,
@@ -168,7 +196,7 @@ class HttpUtil {
   }
 
   /// restful post form 表单提交操作
-  // Future postForm(
+  // Future<dynamic> postForm(
   //   String path, {
   //   dynamic params,
   //   Options? options,

@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.salesoftHrm</string>
+	<string>com.example.vnptHrm</string>
 	<key>PROJECT_ID</key>
 	<string>hrm-pmc</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1020659991482:ios:bc27a707c9a387e8789383</string>
+	<string>1:1020659991482:ios:daad64eaca7117af789383</string>
 </dict>
 </plist>

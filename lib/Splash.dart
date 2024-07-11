@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
                   scale: _animation,
                   child: const Text(
                   
-                    'PMC CHECKLIST',
+                    'PMC HRM',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,

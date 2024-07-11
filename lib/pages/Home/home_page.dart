@@ -441,76 +441,63 @@ Future<bool> _onWillPop() async {
 }
 
 class _TitleAppBarWidget extends StatelessWidget {
-  _TitleAppBarWidget({
-    Key? key,
-  }) : super(key: key);
+  _TitleAppBarWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find<HomeController>();
 
-    return Stack(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(
-              top: AppConstant.getScreenSizeHeight(context) * 0.07,
-              left: AppConstant.getScreenSizeWidth(context) * 0.02),
-          child: Positioned(
-            bottom: 130,
-            left: 20,
-            child: Row(
-              children: [
-                Obx(() {
-                  Color avatarColor;
-                  
-                    avatarColor = AppColors.blueVNPT;
-                  
-                  
-
-                  return Container(
-                    width: AppConstant.getScreenSizeWidth(context) * 0.15,
-                    height: AppConstant.getScreenSizeWidth(context) * 0.15,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: avatarColor,
+    return Padding(
+      padding: EdgeInsets.only(
+        top: AppConstant.getScreenSizeHeight(context) * 0.07,
+        left: AppConstant.getScreenSizeWidth(context) * 0.02,
+      ),
+      child: Row(
+        children: [
+          Obx(() {
+            Color avatarColor = AppColors.blueVNPT;
+            return Container(
+              width: AppConstant.getScreenSizeWidth(context) * 0.15,
+              height: AppConstant.getScreenSizeWidth(context) * 0.15,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: avatarColor,
+              ),
+              child: ClipOval(
+                child: Center(
+                  child: Text(
+                    homeController.kh.value,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
                     ),
-                    child: ClipOval(
-                      child: Center(
-                        child: Text(
-                          homeController.kh.value,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(
-                  width: 10,
+                  ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Xin chào!',
-                      style: TextStyle(color: AppColors.orBgr, fontSize: 18),
-                    ),
-                    Obx(() => Text(
-                          '${homeController.hoDem.value} ${homeController.ten.value}',
-                          style: const TextStyle(
-                              color: AppColors.orBgr,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        )),
-                  ],
-                )
-              ],
-            ),
+              ),
+            );
+          }),
+          const SizedBox(
+            width: 10,
           ),
-        ),
-      ],
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Xin chào!',
+                style: TextStyle(color: AppColors.orBgr, fontSize: 18),
+              ),
+              Obx(() => Text(
+                '${homeController.hoDem.value} ${homeController.ten.value}',
+                style: const TextStyle(
+                  color: AppColors.orBgr,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -15,25 +15,61 @@ import 'package:salesoft_hrm/pages/login/edit_text.dart';
 import 'package:salesoft_hrm/pages/login/login_controller.dart';
 import 'package:salesoft_hrm/resources/app_resource.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    bool checkToken =false;
-    final controller = Get.put(LoginController());
-    final userPasswordController = TextEditingController(
-      text: controller.password.value,
-    );
-    final userUserNameController = TextEditingController(
-      text: controller.userName.value,
-    );
+  _LoginPageState createState() => _LoginPageState();
+}
 
+class _LoginPageState extends State<LoginPage> {
+  bool checkToken = false;
+  bool rememberMe = false;
+  final controller = Get.put(LoginController());
+  late TextEditingController userPasswordController;
+  late TextEditingController userUserNameController;
+
+  @override
+  void initState() {
+    super.initState();
+    userPasswordController = TextEditingController();
+    userUserNameController = TextEditingController();
+    _loadRememberedLogin();
+  }
+
+  @override
+  void dispose() {
+    userPasswordController.dispose();
+    userUserNameController.dispose();
+    super.dispose();
+  }
+
+  void _loadRememberedLogin() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    bool? rememberMe = pref.getBool('rememberMe');
+    if (rememberMe != null && rememberMe) {
+      String? username = pref.getString('username');
+      String? password = pref.getString('password');
+      if (username != null && password != null) {
+        setState(() {
+          userUserNameController.text = username;
+          userPasswordController.text = password;
+          this.rememberMe = rememberMe;
+          controller.userName.value = username;
+          controller.password.value = password;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Get.put(AuthService());
     Get.put(HomeController());
     final mainController = Get.put(MainController());
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -88,6 +124,44 @@ class LoginPage extends StatelessWidget {
                     errorMessage: controller.passwordError.value,
                   )),
               AppConstant.spaceVerticalSmallMedium,
+              const Row(
+                children: [
+                  Flexible(
+                    flex: 6,
+                    child: Row(
+                      children: [
+                        // Checkbox(
+                        //   value: rememberMe,
+                        //   onChanged: (bool? value) {
+                        //     setState(() {
+                        //       rememberMe = value ?? false;
+                        //       if (rememberMe) {
+                        //         userUserNameController.text = controller.userName.value;
+                        //         userPasswordController.text = controller.password.value;
+                        //       } else {
+                        //         userUserNameController.clear();
+                        //         userPasswordController.clear();
+                        //       }
+                        //     });
+                        //   },
+                        // ),
+                        // const Text(
+                        //   'Nhớ tài khoản',
+                        //   style: TextStyle(fontSize: 16, color: Colors.white),
+                        // ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: Text(
+                      'Quên mật khẩu?',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+              AppConstant.spaceVerticalSmallMedium,
               CupertinoButton(
                 onPressed: () async {
                   final username = controller.userName.value;
@@ -102,37 +176,50 @@ class LoginPage extends StatelessWidget {
                     controller.clearPassword();
                     userPasswordController.clear();
                     Get.find<HomeController>().fetchUserInfo();
-                    mainController.pageIndex.value = 0; 
+                    mainController.pageIndex.value = 0;
                     Get.snackbar('Thông báo', 'Đăng nhập thành công.',
                         snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blueVNPT);
                     _loginOnClick(context);
-                      await postToken(username, deviceToken.value);
-                    if(checkToken==true){
-                    SharedPreferences pref = await SharedPreferences.getInstance();
-                     checkToken= await pref.setString('deviceToken', deviceToken.value);
-                   
-                    // print('Token saved: $checkToken');
-                    }
-                    else{
+                    await postToken(username, deviceToken.value);
+                    if (checkToken == true) {
+                      SharedPreferences pref = await SharedPreferences.getInstance();
+                      checkToken = await pref.setString('deviceToken', deviceToken.value);
+                    } else {
                       print('đã lưu token');
                     }
 
+                    if (rememberMe) {
+                      SharedPreferences pref = await SharedPreferences.getInstance();
+                      await pref.setString('mq', username);
+                      await pref.setString('mk', password);
+                      await pref.setBool('rememberMe', rememberMe);
+                    } else {
+                      SharedPreferences pref = await SharedPreferences.getInstance();
+                      await pref.remove('rememberMe');
+                    }
                   } else {
-              _showPermissionDeniedDialog(context);
+                    _showPermissionDeniedDialog(context);
                   }
-                },  
+                },
                 color: AppColors.blueVNPT,
-                child: Text('Đăng nhập'),
+                // padding: const EdgeInsets.symmetric(
+                //   horizontal: AppConstant.kSpac
+                // ),
+                child: const Text(
+                  'Đăng nhập',
+                  style: TextStyle(color: Colors.white, fontSize: 17),
+                ),
               ),
+              
             ],
           ),
         ),
       ),
     );
   }
+
   Future<void> postToken(String ma, String token) async {
-     final urlEndPoint =
-        "${URLHelper.NS_Token}?Ma=$ma&Token=$token";
+    final urlEndPoint = "${URLHelper.NS_Token}?Ma=$ma&Token=$token";
     final response = await HttpUtil().post(
       urlEndPoint,
       params: {'Ma': ma, 'Token': token},
@@ -143,7 +230,7 @@ class LoginPage extends StatelessWidget {
       print('Lỗi khi đẩy lên API: ${response.statusCode}');
     }
   }
-  
+
   void _loginOnClick(BuildContext context) {
     Navigator.push(
       context,
@@ -166,7 +253,7 @@ class LoginPage extends StatelessWidget {
       builder: (context) {
         return CupertinoAlertDialog(
           title: Image.asset(
-            AppResource.icWarning, 
+            AppResource.icWarning,
             height: 80,
             width: 80,
           ),

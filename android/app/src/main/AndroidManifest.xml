@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.vnpt_hrm">
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -14,7 +15,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
     
     <application
-        android:label="salesoft_hrm"
+        android:label="PMC HRM"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         
@@ -44,12 +45,12 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBd8f6zrqKnx64-L1txJ9N5QB7dSLV75pw"/> 
         
-        <service
-            android:name="com.your.package.name.MyFirebaseMessagingService"
+        <!-- <service
+            android:name="com.example.salesoft_hrm"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
+        </service> -->
     </application>
 </manifest>
