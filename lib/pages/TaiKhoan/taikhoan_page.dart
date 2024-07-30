@@ -232,71 +232,76 @@ class ChangePasswordDialog extends StatelessWidget {
       provider: NSDoiMK(Get.find<AuthService>()),
     );
 
-    return AlertDialog(
-      title: Text('Đổi mật khẩu'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: oldPasswordController,
-            decoration: const InputDecoration(
-              labelText: 'Mật khẩu cũ',
+    return GestureDetector(
+       onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: AlertDialog(
+        title: Text('Đổi mật khẩu'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: oldPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Mật khẩu cũ',
+              ),
+              obscureText: true,
             ),
-            obscureText: true,
+            TextField(
+              controller: newPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Mật khẩu mới',
+              ),
+              obscureText: true,
+            ),
+            TextField(
+              controller: confirmPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Xác nhận mật khẩu mới',
+              ),
+              obscureText: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Hủy'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          TextField(
-            controller: newPasswordController,
-            decoration: const InputDecoration(
-              labelText: 'Mật khẩu mới',
-            ),
-            obscureText: true,
-          ),
-          TextField(
-            controller: confirmPasswordController,
-            decoration: const InputDecoration(
-              labelText: 'Xác nhận mật khẩu mới',
-            ),
-            obscureText: true,
+          TextButton(
+            child: const Text('Xác nhận'),
+            onPressed: () async {
+              if (newPasswordController.text != confirmPasswordController.text) {
+                Get.snackbar('Lỗi', 'Mật khẩu mới và mật khẩu xác nhận không khớp', backgroundColor: AppColors.blue50);
+                return;
+              }
+      
+              // try {
+                final response = await updateMKRepository.doiMK(
+                  currentPass: oldPasswordController.text,
+                  newPass: newPasswordController.text,
+                );
+                Navigator.pop(context);
+      Get.snackbar('Thành công', 'Đổi mật khẩu thành công', backgroundColor: AppColors.blueVNPT);
+                print('API response: $response');
+      
+              //   if (response['status'] == 'Success') {
+              //     Navigator.of(context).pop();
+              //     Get.snackbar('Thành công', 'Đổi mật khẩu thành công', backgroundColor: AppColors.blue50);
+              //   } else {
+              //     Get.snackbar('Lỗi', 'Đổi mật khẩu thất bại: ${response['message']}', backgroundColor: AppColors.blue50);
+              //   }
+              // } catch (error) {
+              //   print('Change password error: $error');
+              //   Get.snackbar('Lỗi', 'Đổi mật khẩu thất bại: $error', backgroundColor: AppColors.blue50);
+              // }
+            },
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          child: const Text('Hủy'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        TextButton(
-          child: const Text('Xác nhận'),
-          onPressed: () async {
-            if (newPasswordController.text != confirmPasswordController.text) {
-              Get.snackbar('Lỗi', 'Mật khẩu mới và mật khẩu xác nhận không khớp', backgroundColor: AppColors.blue50);
-              return;
-            }
-
-            // try {
-              final response = await updateMKRepository.doiMK(
-                currentPass: oldPasswordController.text,
-                newPass: newPasswordController.text,
-              );
-              Navigator.pop(context);
-Get.snackbar('Thành công', 'Đổi mật khẩu thành công', backgroundColor: AppColors.blueVNPT);
-              print('API response: $response');
-
-            //   if (response['status'] == 'Success') {
-            //     Navigator.of(context).pop();
-            //     Get.snackbar('Thành công', 'Đổi mật khẩu thành công', backgroundColor: AppColors.blue50);
-            //   } else {
-            //     Get.snackbar('Lỗi', 'Đổi mật khẩu thất bại: ${response['message']}', backgroundColor: AppColors.blue50);
-            //   }
-            // } catch (error) {
-            //   print('Change password error: $error');
-            //   Get.snackbar('Lỗi', 'Đổi mật khẩu thất bại: $error', backgroundColor: AppColors.blue50);
-            // }
-          },
-        ),
-      ],
     );
   }
 }

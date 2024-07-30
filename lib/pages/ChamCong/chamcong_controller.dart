@@ -1,8 +1,12 @@
+import 'package:dio/dio.dart';
+import 'package:get/get_connect/http/src/response/response.dart' hide Response;
 import 'dart:async';
 import 'dart:math';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:salesoft_hrm/pages/ChamCong/reason_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -21,11 +25,12 @@ import 'package:salesoft_hrm/main.dart';
 import 'package:salesoft_hrm/model/calamviec_model.dart';
 
 class Location {
+  final String ma;
   final String name;
   final MyLatLng coordinates;
   bool isSelected;
 
-  Location(this.name, this.coordinates, {this.isSelected = false});
+  Location(this.ma, this.name, this.coordinates, {this.isSelected = false});
 }
 
 class MyLatLng {
@@ -36,13 +41,17 @@ class MyLatLng {
 }
 
 class checkinController extends GetxController {
+  bool _reasonDialog2Shown = false;
+  bool get reasonDialog2Shown => _reasonDialog2Shown;
   RefreshController refreshController = RefreshController(
     initialRefresh: false,
   );
   late Timer _timer;
   String selectedShift = '';
   String btnChamCong = '';
+  String selectedShiftMa = '';
   bool isButtonVisible = true;
+  // bool _checkCCIn = true;
   Completer<GoogleMapController> controllerCompleter = Completer();
   GoogleMapController? googleMapController1;
   GoogleMapController? googleMapController2;
@@ -76,7 +85,13 @@ class checkinController extends GetxController {
     if (currentLocation == null) {
       getCurrentLocation();
     }
+    // updateCheckInStatus(_checkCCIn);
   }
+  //   void updateCheckInStatus(bool value) {
+  //   _checkCCIn = value;
+  //   update(); 
+  //   print('giá trị _checkcc:$_checkCCIn');
+  // }
 
   Future<void> getCaLamViecList() async {
     try {
@@ -97,37 +112,40 @@ class checkinController extends GetxController {
   }
 
   Future<void> getDiaDiemList() async {
-    try {
-      final diaDiemProvider = DiaDiemProviderAPI(AuthService());
+  try {
+    final diaDiemProvider = DiaDiemProviderAPI(AuthService());
+    final diaDiemRepository = DiaDiemRepository(provider: diaDiemProvider);
+    final diaDiemList = await diaDiemRepository.getDiaDiem();
 
-      final diaDiemRepository = DiaDiemRepository(provider: diaDiemProvider);
+    if (diaDiemList != null && diaDiemList.diaDiemList.isNotEmpty) {
+      offices.clear();
+      offices.addAll(
+        diaDiemList.diaDiemList
+            .where((diaDiem) =>
+                diaDiem.ten != null &&
+                diaDiem.viDo != null &&
+                diaDiem.kinhDo != null)
+            .map((diaDiem) {
+          double latitude = double.parse(diaDiem.viDo!);
+          double longitude = double.parse(diaDiem.kinhDo!);
+          return Location(
+            diaDiem.ma!,
+            diaDiem.ten!,
+            MyLatLng(latitude, longitude),
+          );
+        }),
+      );
 
-      final diaDiemList = await diaDiemRepository.getDiaDiem();
-
-      if (diaDiemList != null && diaDiemList.diaDiemList.isNotEmpty) {
-        offices.clear();
-        for (var diaDiem in diaDiemList.diaDiemList) {
-          if (diaDiem.ten != null &&
-              diaDiem.viDo != null &&
-              diaDiem.kinhDo != null) {
-            double latitude = double.parse(diaDiem.viDo!);
-            double longitude = double.parse(diaDiem.kinhDo!);
-            offices.add(Location(
-              diaDiem.ten!,
-              MyLatLng(latitude, longitude),
-            ));
-          }
-        }
-
-        updateMarkers();
-        print('abc $offices');
-      } else {
-        print('Không có dữ liệu địa điểm');
-      }
-    } catch (e) {
-      print('Lỗi khi lấy dữ liệu DiaDiem: $e');
+      updateMarkers();
+      print('abc $offices');
+    } else {
+      print('Không có dữ liệu địa điểm');
     }
+  } catch (e) {
+    print('Lỗi khi lấy dữ liệu DiaDiem: $e');
   }
+}
+
 
   final box = GetStorage();
 
@@ -223,8 +241,9 @@ class checkinController extends GetxController {
     LocationPermission permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      Get.snackbar('Thông báo', 'Bạn cần cấp quyền truy câpj vị trí để sử dụng ứng dụng này.',
-                        snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+      Get.snackbar('Thông báo',
+          'Bạn cần cấp quyền truy câpj vị trí để sử dụng ứng dụng này.',
+          snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
     } else {
       getCurrentLocation();
     }
@@ -297,36 +316,52 @@ class checkinController extends GetxController {
     }
     return false;
   }
-
-//thông báo
   
+//thông báo
 
- void checkIn() {
+ void checkIn() async {
+
   TimeOfDay now = TimeOfDay.now();
 
   if (currentLocation == null) {
-    Get.snackbar('Thông báo', 'Đang lấy vị trí hiện tại.',
-      snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+    Get.snackbar(
+      'Thông báo',
+      'Đang lấy vị trí hiện tại.',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: AppColors.blue50,
+    );
     print('Đang đợi lấy vị trí hiện tại...');
     return;
   }
 
   if (distanceController.text.isEmpty) {
-    Get.snackbar('Thông báo', 'Vui lòng nhập khoảng cách chấm công.',
-      snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+    Get.snackbar(
+      'Thông báo',
+      'Vui lòng nhập khoảng cách chấm công.',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: AppColors.blue50,
+    );
     return;
   }
 
   double distanceThreshold = double.tryParse(distanceController.text) ?? 0;
   if (distanceThreshold <= 0) {
-    Get.snackbar('Thông báo', 'Khoảng cách chấm công không hợp lệ.',
-      snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+    Get.snackbar(
+      'Thông báo',
+      'Khoảng cách chấm công không hợp lệ.',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: AppColors.blue50,
+    );
     return;
   }
 
   if (selectedOffice == null) {
-    Get.snackbar('Thông báo', 'Vui lòng chọn văn phòng trước khi chấm công.',
-      snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+    Get.snackbar(
+      'Thông báo',
+      'Vui lòng chọn văn phòng trước khi chấm công.',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: AppColors.blue50,
+    );
     return;
   }
 
@@ -336,42 +371,139 @@ class checkinController extends GetxController {
     selectedOffice!.coordinates.latitude,
     selectedOffice!.coordinates.longitude,
   );
-
-  CaLamViec? selectedShiftModel;
-  if (ca.isNotEmpty) {
-    selectedShiftModel = ca.firstWhere((shift) =>
-      '${shift.ten} (${shift.gioVao} - ${shift.gioRa})' == selectedShift,
-    );
-  }
-
-  if (selectedShiftModel != null) {
-    int timeInMinutes = _convertToMinutes(selectedShiftModel.gioVao);
-    int timeOutMinutes = _convertToMinutes(selectedShiftModel.gioRa);
-    int currentMinutes = now.hour * 60 + now.minute;
-
-    if (distanceToOffice <= distanceThreshold) {
-      if (timeInMinutes - 30 <= currentMinutes && currentMinutes <= timeInMinutes + 10) {
-         postChamCong(deviceToken.value, selectedShift, selectedOffice!.name, true, '');
-        Get.snackbar('Thông báo', 'Đã chấm công vào ${selectedOffice!.name} (${selectedShift}).',
-          snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
-      } else if (timeOutMinutes - 10 <= currentMinutes && currentMinutes <= timeOutMinutes + 30) {
-        Get.snackbar('Thông báo', 'Đã chấm công ra ${selectedOffice!.name} (${selectedShift}).',
-          snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
-      } else {
-        Get.snackbar('Thông báo', 'Chưa tới giờ ${selectedOffice!.name} (${selectedShift}).',
-          snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+    
+  CaLamViec? selectedShiftModel = findSelectedShiftModel();
+     dio.Response? response = await checkVao(selectedShiftModel!.ma!);
+     dio.Response? response2 = await checkRa(selectedShiftModel.ma!);
+      if (selectedShiftModel != null) {
+  int timeInMinutes = _convertToMinutes(selectedShiftModel.gioVao);
+  int timeOutMinutes = _convertToMinutes(selectedShiftModel.gioRa);
+  int currentMinutes = now.hour * 60 + now.minute;
+  print('timeIn:$timeInMinutes');
+  print('timeOut:$timeOutMinutes');
+  if (distanceToOffice <= distanceThreshold) {
+    if(timeInMinutes-30<=currentMinutes&&timeInMinutes+30>=currentMinutes) {
+      if(response!=null && response.statusCode==204){
+          Get.snackbar(
+          'Thông báo',
+          'Đã chấm công vào thành công.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: AppColors.blue50,
+        );
+        await postChamCong(
+            deviceToken.value, selectedShiftModel.ma, selectedOffice!.ma, true, '');
       }
-    } else {
-      Get.snackbar('Thông báo', 'Bạn đang ở quá xa văn phòng.',
-        snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+      else if(response!=null && response.statusCode==200){
+        Get.snackbar(
+          'Thông báo',
+          'Đã chấm công vào rồi.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: AppColors.blue50,
+        );
+      }
+    }
+    else if(timeInMinutes+30<=currentMinutes&&timeOutMinutes-30>=currentMinutes){
+      if(response != null && response.statusCode == 204 && !_reasonDialog2Shown){
+         _reasonDialog2Shown = true; 
+          Get.dialog(ReasonDialog()).then((reason) async {
+            _reasonDialog2Shown = false; 
+            if (reason != null) {
+              Get.snackbar(
+                'Thông báo',
+                'Đã chấm công vào thành công.',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: AppColors.blue50,
+              );
+              await postChamCong(
+                  deviceToken.value, selectedShiftModel.ma, selectedOffice!.ma, true, reason);
+              print('ab');
+            }
+          });
+      }
+      else if(response != null &&response.statusCode == 200 &&response2 != null &&response2.statusCode == 204 && !_reasonDialog2Shown){
+        _reasonDialog2Shown = true;
+          Get.dialog(ReasonDialog2()).then((reason) async {
+            _reasonDialog2Shown = false; 
+            if (reason != null) {
+              Get.snackbar(
+                'Thông báo',
+                'Đã chấm công ra thành công.',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: AppColors.blue50,
+              );
+              await postChamCong(
+                  deviceToken.value, selectedShiftModel.ma, selectedOffice!.ma, false, reason);
+              print('abc');
+            }
+          });
+      }
+      else if(response2!=null && response2.statusCode==200){
+        Get.snackbar(
+          'Thông báo',
+          'Đã chấm công ra rồi.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: AppColors.blue50,
+        );
+      }
+    }
+    else if(timeOutMinutes-30<=currentMinutes&&timeOutMinutes+30>=currentMinutes){
+      if(response2!=null && response2.statusCode==204){
+         Get.snackbar(
+                'Thông báo',
+                'Đã chấm công ra thành công.',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: AppColors.blue50,
+              );
+              await postChamCong(
+                  deviceToken.value, selectedShiftModel.ma, selectedOffice!.ma, false,'');
+      }
+      else if(response2!=null&&response2.statusCode==200){
+         Get.snackbar(
+                'Thông báo',
+                'Đã chấm công ra rồi.',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: AppColors.blue50,
+              );
+      }
+    }
+    else{
+       Get.snackbar(
+      'Thông báo',
+       'Chưa tới giờ chấm công ${selectedOffice!.name} (${selectedShift}).',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: AppColors.blue50,
+    );
     }
   } else {
-    Get.snackbar('Thông báo', 'Không tìm thấy thông tin ca làm việc đã chọn.',
-      snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+    Get.snackbar(
+      'Thông báo',
+      'Bạn đang ở quá xa văn phòng.',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: AppColors.blue50,
+    );
+  }
+  } else {
+    Get.snackbar(
+      'Thông báo',
+      'Không tìm thấy thông tin ca làm việc đã chọn.',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: AppColors.blue50,
+    );
   }
 }
 
-  
+
+
+// Hàm tìm kiếm ca làm việc theo selectedShift
+  CaLamViec? findSelectedShiftModel() {
+    if (ca.isNotEmpty) {
+      return ca.firstWhereOrNull(
+        (shift) =>
+            '${shift.ten} (${shift.gioVao} - ${shift.gioRa})' == selectedShift,
+      );
+    }
+    return null;
+  }
 
   int _convertToMinutes(String? time) {
     if (time == null) return 0;
@@ -448,25 +580,85 @@ class checkinController extends GetxController {
 
     update();
   }
-Future<void> postChamCong(String token, String ca, String diaDiem, bool checkIn, String lyDo) async {
+
+  Future<dio.Response?> postChamCong(String token, String? ca, String diaDiem,
+      bool checkIn, String lyDo) async {
+    final prefs = await SharedPreferences.getInstance();
+    final ma = prefs.getString('ma');
+
+    if (ma == null) {
+      print('Không tìm thấy mã trong SharedPreferences');
+      return null;
+    }
+
+    final urlEndPoint =
+        "${URLHelper.NS_ChamCong}?Ma=$ma&Token=$token&CaLamViec=$ca&DiaDiem=$diaDiem&CheckIn=$checkIn&LyDo=$lyDo";
+    final response = await HttpUtil().post(
+      urlEndPoint,
+      params: {
+        'Ma': ma,
+        'Token': token,
+        'CaLamViec': ca,
+        'DiaDiem': diaDiem,
+        'CheckIn': checkIn,
+        'LyDo': lyDo
+      },
+    );
+
+    if (response.statusCode == 200) {
+    print('Đã đẩy lên API');
+    // Get.snackbar(
+    //   'Thông báo',
+    //   'Đã chấm công thành công.',
+    //   snackPosition: SnackPosition.TOP,
+    //   backgroundColor: AppColors.blue50,
+    // );
+  } else {
+    print('Lỗi khi đẩy lên API: ${response.statusCode}');
+    // Get.snackbar(
+    //   'Thông báo',
+    //   'Lỗi khi chấm công. Vui lòng thử lại.',
+    //   snackPosition: SnackPosition.TOP,
+    //   backgroundColor: Colors.red,
+    // );
+  }
+  }
+  Future<dio.Response?> checkVao(String caLamViec) async {
   final prefs = await SharedPreferences.getInstance();
   final ma = prefs.getString('ma');
 
   if (ma == null) {
     print('Không tìm thấy mã trong SharedPreferences');
-    return;
+    return null;
   }
 
-  final urlEndPoint = "${URLHelper.NS_ChamCong}?Ma=$ma&Token=$token&CaLamViec=$ca&DiaDiem=$diaDiem&CheckIn=$checkIn&LyDo=$lyDo";
-  final response = await HttpUtil().post(
-    urlEndPoint,
-    params: {'Ma': ma, 'Token': token, 'CaLamViec': ca, 'DiaDiem': diaDiem, 'CheckIn': checkIn, 'LyDo': lyDo},
-  );
-
-  if (response.statusCode == 200) {
-    print('Đã đẩy lên API');
-  } else {
-    print('Lỗi khi đẩy lên API: ${response.statusCode}');
+  final urlEndPoint = '${URLHelper.NS_CheckVao}?Ma=$ma&CaLamViec=$caLamViec';
+  try {
+    final response = await HttpUtil().post2('https://api.salesoft.vn/api/$urlEndPoint', params: {'Ma': ma,'CaLamViec':caLamViec});
+    return response;
+  } catch (e) {
+    print('Lỗi khi kiểm tra chấm công: $e');
+    return null;
   }
 }
+Future<dio.Response?> checkRa(String caLamViec) async{
+  final prefs=await SharedPreferences.getInstance();
+  final ma=prefs.getString('ma');
+
+  if(ma==null){
+    print('Không tìm thấy mã trong SharedPrefences');
+    return null;
+  }
+  final urlEndPoint='${URLHelper.NS_CheckRa}?Ma=$ma&CaLamViec=$caLamViec';
+  try{
+    final response=await HttpUtil().post2('https://api.salesoft.vn/api/$urlEndPoint',params:{'Ma':ma,'CaLamViec':caLamViec});
+    return response;
+  }catch(e){
+    print('Lỗi khi kiểm tra chấm công2:$e');
+    return null;
+  }
+
+}
+
+
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart' as dio_pkg; 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:salesoft_hrm/API/url_helper.dart';
 import 'package:salesoft_hrm/common/app_global.dart';
@@ -110,7 +111,19 @@ class HttpUtil {
     );
     checkShouldLogout(response.data);
     return response.data;
+  }Future<dio_pkg.Response?> post2(String url, {Map<String, dynamic>? params}) async {
+  try {
+    final response = await dio.post(url, data: params);
+    print('Response status: ${response.statusCode}');
+    print('Response data: ${response.data}');
+    return response;
+  } catch (e) {
+    print('Lỗi khi gọi API: $e');
+    return null;
   }
+}
+
+
 
   /// restful put 操作
   Future<dynamic> put(

@@ -14,6 +14,7 @@ class DanhBaItemView extends StatelessWidget {
   final String? zalo;
   final String? email;
   final String? gioiTinh;
+  final String? dienThoai;
   final String? ma;
   final Function(String?)? onTap;
 
@@ -28,6 +29,7 @@ class DanhBaItemView extends StatelessWidget {
     this.zalo,
     this.email,
     this.gioiTinh,
+    this.dienThoai,
     this.ma,
   }) : super(key: key);
 
@@ -81,6 +83,11 @@ class DanhBaItemView extends StatelessWidget {
                             height: 1.5,
                           ),
                     ),
+                    AppConstant.spaceVerticalSmallExtra,
+                    Text('Điện thoại: ' + (dienThoai ?? ''),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              height: 1.5,
+                            )),
                     AppConstant.spaceVerticalSmallExtra,
                     Text('Email: ' + (email ?? ''),
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(

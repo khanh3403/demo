@@ -1,50 +1,59 @@
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:salesoft_hrm/API/provider/not_approved_provider.dart';
 import 'package:salesoft_hrm/API/repository/login_repository.dart';
 import 'package:salesoft_hrm/API/repository/not_approved_repository.dart';
-import 'package:salesoft_hrm/model/not_approved_model.dart';
 
-class NotApprovedController extends GetxController with StateMixin<List<Approved>> {
-  RefreshController refreshController = RefreshController(initialRefresh: false);
-  List<Approved>? contentDisplay;
+class ApprovedController extends GetxController {
+  final ApprovedRepository _approvedRepository =
+      ApprovedRepository(provider: ApprovedProviderAPI(AuthService()));
+  final ApprovedRepository _notapprovedRepository =ApprovedRepository(provider:  ApprovedProviderAPI(AuthService()));
 
-  late String ma;
-
-  final NotApprovedRepository _notApprovedRepository = 
-      NotApprovedRepository(provider: NotApprovedProviderAPI(AuthService()));
+  var hoTen = ''.obs;
+  var gioiTinh = ''.obs;
+  var kh = ''.obs;
+  var chucVu = ''.obs;
+  var donVi = ''.obs;
+  var phongBan = ''.obs;
+  var ngaySinh = ''.obs;
+  var soHd = ''.obs;
+  var ngayKyHd = ''.obs;
+  var dcll = ''.obs;
+  var dienThoai = ''.obs;
+  var email = ''.obs;
+  var toCongTac = ''.obs;
+  var cmt = ''.obs;
+  var ngayCmt=''.obs;
+  var noiCmt=''.obs;
+  var taiKhoan=''.obs;
+  var nganHang=''.obs;
+  var noiSinh=''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchMaAndListContent();
+    fetchUserInfo();
   }
 
-  Future<void> fetchMaAndListContent() async {
-    final authService = Get.find<AuthService>();
-    ma = (await authService.ma) ?? '';
-    if (ma.isNotEmpty) {
-      fetchListContent();
-    } else {
-      change(null, status: RxStatus.error('Không lấy được mã người dùng'));
-    }
-  }
-
-  void fetchListContent({bool isLoadMore = false}) async {
-    if (!isLoadMore) {
-      contentDisplay = null;
-      refreshController.resetNoData();
-    }
-
-    final result = await _notApprovedRepository.getNotApproved(ma: ma);
-
-    print('Kết quả API: $result');  // Ghi log kết quả API
-
-    if (result != null) {
-      contentDisplay = result;
-      change(contentDisplay, status: RxStatus.success());
-    } else {
-      change(null, status: RxStatus.error('Không lấy được dữ liệu'));
+  Future<void> fetchUserInfo() async {
+    try {
+      final ma = await AuthService().ma;
+      if (ma != null) {
+        final nsInfo = await _approvedRepository.getNotApproved(ma: ma);
+        hoTen.value = nsInfo.nhanSu ?? '';
+        gioiTinh.value = nsInfo.gioiTinh ?? '';
+        noiSinh.value=nsInfo.noiSinh ?? '';
+        ngaySinh.value = nsInfo.ngaySinh ?? '';
+        dcll.value = nsInfo.dcll ?? '';
+        dienThoai.value = nsInfo.dienThoai ?? '';
+        email.value = nsInfo.email ?? '';
+        cmt.value=nsInfo.cmt ?? '';
+        ngayCmt.value=nsInfo.ngayCmt ?? '';
+        noiCmt.value=nsInfo.noiCmt ?? '';
+        taiKhoan.value=nsInfo.taiKhoan ?? '';
+        nganHang.value=nsInfo.nganHang ?? '';
+      }
+    } catch (e) {
+      print('Error fetching user info: $e');
     }
   }
 }

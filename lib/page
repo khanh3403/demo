@@ -1,29 +1,149 @@
-body: Container(
-        padding: EdgeInsets.only(
-            left: AppConstant.getScreenSizeWidth(context) * 0.05),
-        child: controller.obx(
-          (state) => ListView.builder(
-            itemCount: state?.data?.length ?? 0,
-            itemBuilder: (context, index) {
-              final item = state!.data![index];
-              return QuanHeItemView(
-                hoTen: item.hoTen,
-                quanHe: item.quanHe,
-                ngaySinh: item.ngaySinh,
-                diaChi: item.diaChi,
-                ngheNghiep: item.ngheNghiep,
-                maSoThue: item.maSoThue,
-                soCmt: item.soCmt,
-                ngayCmt: item.ngayCmt,
-                noiCmt: item.noiCmt,
-                ghiChu: item.ghiChu,
-              );
-            },
-          ),
-          onLoading: const Center(child: CircularProgressIndicator()),
-          onEmpty: const Center(
-            child: Text('Không có thông tin quan hệ'),
-          ),
-          onError: (error) => Center(child: Text('Lỗi: $error')),
+class _NghiPhepPageState extends State<NghiPhepPage> {
+  List<LoaiNghi> _loaiNghiList = [];
+  LoaiNghi? _selectedLoaiNghi;
+  String? _selectedMonth;
+  String? _selectedYear;
+
+  List<String> months = List.generate(12, (index) => (index + 1).toString().padLeft(2, '0'));
+  List<String> years = List.generate(10, (index) => (DateTime.now().year - index).toString());
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLoaiNghi();
+  }
+
+  Future<void> _fetchLoaiNghi() async {
+    final provider = LoaiNghiProviderAPI();
+    final repository = LoaiNghiRepository(provider: provider);
+
+    try {
+      final loaiNghiResponse = await repository.getLoaiNghi(table: 'DM_LoaiNghi');
+      if (loaiNghiResponse != null) {
+        setState(() {
+          _loaiNghiList = loaiNghiResponse.data;
+          if (_loaiNghiList.isNotEmpty) {
+            _selectedLoaiNghi = _loaiNghiList.first;
+          }
+        });
+      }
+    } catch (e) {
+      print('Error fetching LoaiNghi: $e');
+    }
+  }
+
+  void _fetchNghiPhep() async {
+    final provider = ListNghiPhepProviderAPI(Get.find<AuthService>());
+    if (_selectedMonth != null && _selectedYear != null) {
+      try {
+        final listNghiPhep = await provider.getListNghiPhep(
+          ma: await Get.find<AuthService>().ma ?? '',
+          thang: _selectedMonth!,
+          nam: _selectedYear!,
+        );
+        // Xử lý dữ liệu trả về từ API
+      } catch (e) {
+        print('Error fetching NghiPhep: $e');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(NghiPhepController());
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButtonWidget(),
+        backgroundColor: AppColors.blueVNPT,
+        centerTitle: false,
+        elevation: 0,
+        title: const TitleAppBarWidget(title: "Đăng ký nghỉ"),
+      ),
+      body: Container(
+        margin: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedMonth,
+                    decoration: InputDecoration(
+                      labelText: 'Tháng',
+                    ),
+                    items: months
+                        .map((month) => DropdownMenuItem<String>(
+                              value: month,
+                              child: Text(month),
+                            ))
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedMonth = newValue;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Vui lòng chọn tháng';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedYear,
+                    decoration: InputDecoration(
+                      labelText: 'Năm',
+                    ),
+                    items: years
+                        .map((year) => DropdownMenuItem<String>(
+                              value: year,
+                              child: Text(year),
+                            ))
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedYear = newValue;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Vui lòng chọn năm';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: _fetchNghiPhep,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.search, color: Colors.white),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    'Tìm kiếm',
+                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                  ),
+                ],
+              ),
+            ),
+            // Thêm widget hiển thị danh sách nghỉ phép ở đây
+          ],
         ),
       ),
+    );
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:salesoft_hrm/main.dart';
 import 'package:salesoft_hrm/pages/login/login_page.dart';
 import 'package:salesoft_hrm/API/repository/login_repository.dart';
 import 'package:salesoft_hrm/resources/app_resource.dart';
@@ -27,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
     _controller.forward();
     _startTimer();
+    init();
   }
 
   @override

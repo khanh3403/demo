@@ -28,6 +28,225 @@ class QuanHeItemView extends StatelessWidget {
     this.noiCmt,
     this.ghiChu,
   }) : super(key: key);
+// void _showEditDialog3() {
+//   final TextEditingController hoTenController = TextEditingController(text: '$hoTen');
+//   final TextEditingController quanHeController = TextEditingController(text: '$quanHe');
+//   final TextEditingController ngaySinhController = TextEditingController(text: formatDate(ngaySinh));
+//   final TextEditingController diaChiController = TextEditingController(text: diaChi);
+//   final TextEditingController ngheNghiepController = TextEditingController(text: ngheNghiep);
+//   final TextEditingController maSoController = TextEditingController(text: maSoThue);
+//   final TextEditingController cmtController = TextEditingController(text: soCmt);
+//   final TextEditingController noiCapController = TextEditingController(text: noiCmt);
+//   final TextEditingController ngayCapController = TextEditingController(text: formatDate(ngayCmt));
+  
+//   final _formKey = GlobalKey<FormState>();
+
+
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(
+//         builder: (context, setState) {
+//           return AlertDialog(
+//             title: Text('Chỉnh sửa thông tin'),
+//             content: Form(
+//               key: _formKey,
+//               child: SingleChildScrollView(
+//                 child: Column(
+//                   children: [
+//                     TextFormField(
+//                       controller: hoTenController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Họ tên',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             hoTenController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập họ tên';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                     TextFormField(
+//                       controller: hoTenController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Quan hệ',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             quanHeController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập quan hệ';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                     TextFormField(
+//                       controller: ngaySinhController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Ngày sinh',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             ngaySinhController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập ngày sinh';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                     TextFormField(
+//                       controller: diaChiController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Địa chỉ',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             diaChiController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập địa chỉ';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                     TextFormField(
+//                       controller: ngheNghiepController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Nghề nghiệp',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             ngheNghiepController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập nghề nghiệp';
+//                         }
+                        
+//                         return null;
+//                       },
+//                     ),
+//                     TextFormField(
+//                       controller: maSoController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Mã số thuế',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                            maSoController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập mã số thuế';
+//                         }
+                       
+//                         return null;
+//                       },
+//                     ),
+//                     TextFormField( controller: maSoController,
+//                       controller: cmtController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Số CCCD/CMND',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             cmtController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập số CCCD/CMND';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                      TextFormField(
+//                       controller: ngayCapController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Ngày cấp',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             ngayCapController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập ngày cấp';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                     TextFormField(
+//                       controller: noiCapController,
+//                       decoration: InputDecoration(
+//                         labelText: 'Nơi cấp',
+//                         suffixIcon: IconButton(
+//                           icon: Icon(Icons.clear),
+//                           onPressed: () {
+//                             noiCapController.clear();
+//                           },
+//                         ),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Vui lòng nhập nơi cấp';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             actions: [
+//               TextButton(
+//                 child: Text('Hủy'),
+//                 onPressed: () {
+//                   Navigator.of(context).pop();
+//                 },
+//               ),
+//               TextButton(
+//                 child: Text('Xác nhận'),
+//                 onPressed: () async {
+//                   if (_formKey.currentState!.validate()) {
+                 
+                   
+//                     Navigator.of(context).pop();
+//                   }
+//                 },
+//               ),
+//             ],
+//           );
+//         },
+//       );
+//     },
+//   );
+// }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +308,7 @@ class QuanHeItemView extends StatelessWidget {
             SizedBox(
               height: AppConstant.getScreenSizeHeight(context) * 0.01,
             ),
-            RowHoSo(text1: 'Ghi chú', text2: ghiChu ?? ''),
+            // RowHoSo(text1: 'Ghi chú', text2: ghiChu ?? ''),
           ],
         ),
       ),

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:salesoft_hrm/API/provider/NS_Update_provider.dart';
+import 'package:salesoft_hrm/API/repository/NS_Update_repository.dart';
+import 'package:salesoft_hrm/API/repository/login_repository.dart';
 import 'package:salesoft_hrm/common/app_colors.dart';
 import 'package:salesoft_hrm/common/app_constant.dart';
-import 'package:salesoft_hrm/common/app_global.dart';
 import 'package:salesoft_hrm/common/format_date.dart';
 import 'package:salesoft_hrm/pages/HoSo/DanhMucHoSo/HocVan/hocvan_controller.dart';
 import 'package:salesoft_hrm/pages/HoSo/DanhMucHoSo/HocVan/hocvan_item.dart';
@@ -37,46 +40,435 @@ class _MyInformationState extends State<MyInformation> {
   }
 
   void dialogApproved() {
-    final NotApprovedController approvedController = Get.put(NotApprovedController());
+    final ApprovedController approvedController = Get.put(ApprovedController());
 
-    approvedController.fetchListContent();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Đang chờ xét duyệt'),
-          content: Container(
-            width: double.maxFinite,
-            child: Get.find<NotApprovedController>().obx(
-              (state) {
-                if (state == null || state.isEmpty) {
-                  return const Center(
-                    child: Text('Không có thông tin'),
-                  );
-                }
-
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: state.length,
-                  itemBuilder: (context, index) {
-                    final item = state[index];
-                    return ApprovedItemView(
-                      cotDuLieu: item.cotDuLieu,
-                      duLieu: item.duLieu,
-                    );
-                  },
-                );
-              },
-              onLoading: const Center(child: CircularProgressIndicator()),
-              onError: (error) => Center(child: Text('Lỗi: $error')),
-            ),
-          ),
+          content: Column(
+                  children: [
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.01,
+                    ),
+                    RowHoSo(
+                      text1: 'Họ tên',
+                      text2: '${homeController.hoDem.value} ${homeController.ten.value}',
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo(
+                      text1: 'Ngày sinh',
+                      text2: formatDate(approvedController.ngaySinh.value),
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo(
+                      text1: 'Giới tính',
+                      text2: approvedController.gioiTinh.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo3(
+                      text1: 'Địa chỉ',
+                      text2: approvedController.dcll.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo3(
+                      text1: 'Điện thoại',
+                      // icon: Icons.edit,
+                      text2: approvedController.dienThoai.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo3(
+                      // icon: Icons.edit,
+                      text1: 'Email',
+                      text2: approvedController.email.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo(
+                      text1: 'Số CMT',
+                      text2: approvedController.cmt.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo(
+                      text1: 'Nơi cấp',
+                      text2: approvedController.noiCmt.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo(
+                      text1: 'Ngày cấp',
+                      text2: formatDate(approvedController.ngayCmt.value),
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo3(
+                      // icon: Icons.edit,
+                      text1: 'Tài khoản',
+                      text2: approvedController.taiKhoan.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                    RowHoSo3(
+                      // icon: Icons.edit,
+                      text1: 'Ngân hàng',
+                      text2: approvedController.nganHang.value,
+                    ),
+                    SizedBox(
+                      height: AppConstant.getScreenSizeHeight(context) * 0.02,
+                    ),
+                  ],
+                ),
           actions: [],
         );
       },
     );
   }
+void _showEditDialog2() {
+  final AuthService authService = Get.find<AuthService>();
+  final TextEditingController hoTenController = TextEditingController(text: '${homeController.hoDem.value} ${homeController.ten.value}');
+  final TextEditingController ngaySinhController = TextEditingController(text: formatDate(homeController.ngaySinh.value));
+  final TextEditingController diaChiController = TextEditingController(text: homeController.dcll.value);
+  final TextEditingController dienThoaiController = TextEditingController(text: homeController.dienThoai.value);
+  final TextEditingController emailController = TextEditingController(text: homeController.email.value);
+  final TextEditingController cmtController = TextEditingController(text: homeController.cmt.value);
+  final TextEditingController noiCapController = TextEditingController(text: homeController.noiCmt.value);
+  final TextEditingController ngayCapController = TextEditingController(text: formatDate(homeController.ngayCmt.value));
+  final TextEditingController taiKhoanController = TextEditingController(text: homeController.taiKhoan.value);
+  final TextEditingController nganHangController = TextEditingController(text: homeController.nganHang.value);
+  final TextEditingController noiSinhController = TextEditingController();
+  final TextEditingController dcttController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  String gioiTinh = homeController.gioiTinh.value;
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Row(
+              children: [
+                Text('Chỉnh sửa thông tin'),
+                GestureDetector(
+                  onTap: () {
+                    dialogApproved();
+                  },
+                  child: const FaIcon(FontAwesomeIcons.list),
+                ),
+              ],
+            ),
+            content: Container(
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: hoTenController,
+                        decoration:const InputDecoration(
+                          labelText: 'Họ tên',
+                          
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập họ tên';
+                          }
+                          return null;
+                        },
+                        enabled: false, 
+                      ),
+                      TextFormField(
+                        controller: ngaySinhController,
+                        decoration: InputDecoration(
+                          labelText: 'Ngày sinh',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              ngaySinhController.clear();
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập ngày sinh';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: noiSinhController,
+                        decoration: InputDecoration(
+                          labelText: 'Nơi sinh',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              noiSinhController.clear();
+                            },
+                          ),
+                        ),
+                        
+                      ),
+                      Row(
+                        children: [
+                          Text('Giới tính:', style: TextStyle(fontSize: 16)),
+                          SizedBox(width: 10),
+                          DropdownButton<String>(
+                            value: gioiTinh,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                gioiTinh = newValue!;
+                                homeController.gioiTinh.value = gioiTinh;
+                              });
+                            },
+                            items: <String>['Nam', 'Nữ']
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                       TextFormField(
+                        controller: dcttController,
+                        decoration: InputDecoration(
+                          labelText: 'Địa chỉ thường chú',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              dcttController.clear();
+                            },
+                          ),
+                        ),
+                      
+                      ),
+                      TextFormField(
+                        controller: diaChiController,
+                        decoration: InputDecoration(
+                          labelText: 'Địa chỉ liên lạc',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              diaChiController.clear();
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập địa chỉ';
+                          }
+                          return null;
+                        },
+                      ),
+                      
+                      TextFormField(
+                        controller: dienThoaiController,
+                        decoration: InputDecoration(
+                          labelText: 'Điện thoại',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              dienThoaiController.clear();
+                            },
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập số điện thoại';
+                          }
+                          if (!isValidPhoneNumber(value)) {
+                            return 'Số điện thoại không hợp lệ';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              emailController.clear();
+                            },
+                          ),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập email';
+                          }
+                          if (!isValidEmail(value)) {
+                            return 'Email không hợp lệ';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: cmtController,
+                        decoration: InputDecoration(
+                          labelText: 'Số CMT',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              cmtController.clear();
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập số CMT';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: noiCapController,
+                        decoration: InputDecoration(
+                          labelText: 'Nơi cấp',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              noiCapController.clear();
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập nơi cấp';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: ngayCapController,
+                        decoration: InputDecoration(
+                          labelText: 'Ngày cấp',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              ngayCapController.clear();
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập ngày cấp';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: taiKhoanController,
+                        decoration: InputDecoration(
+                          labelText: 'Tài khoản',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              taiKhoanController.clear();
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập tài khoản';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: nganHangController,
+                        decoration: InputDecoration(
+                          labelText: 'Ngân hàng',
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              nganHangController.clear();
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Vui lòng nhập ngân hàng';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: Text('Hủy'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('Xác nhận'),
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    try {
+                      final provider2 = NSUpdateAPI2(authService);
+                      final repository2 = NSUpdateNSRepository(provider2: provider2);
+                      final DateFormat formatter = DateFormat('yyyy/MM/dd');
+                      final String formattedNgaySinh = formatter.format(DateFormat('dd/MM/yyyy').parse(ngaySinhController.text));
+                      final String formattedNgayCap = formatter.format(DateFormat('dd/MM/yyyy').parse(ngayCapController.text));
+                      await repository2.NSUpdateAPI2(
+                        ngaySinh: formattedNgaySinh,
+                        dienThoai: dienThoaiController.text,
+                        dcll: diaChiController.text,
+                        email: emailController.text,
+                        cmt: cmtController.text,
+                        noiCmt: noiCapController.text,
+                        ngayCmt: formattedNgayCap,
+                        nganHang: nganHangController.text,
+                        taiKhoan: taiKhoanController.text,
+                        noiSinh: noiSinhController.text,
+                        gioiTinh: gioiTinh,
+                        dctt: dcttController.text,
+                      );
+
+                      Get.snackbar("Thông báo", "Cập nhật thông tin cá nhân thành công",
+                          snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blue50);
+                      Navigator.of(context).pop();
+                    } catch (error) {
+                      Get.snackbar("Lỗi", "Cập nhật thông tin cá nhân thất bại: $error",
+                          snackPosition: SnackPosition.TOP, backgroundColor: Colors.red);
+                    }
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
 
   void _showEditDialog(String title, String currentValue, String cot) {
     final TextEditingController textController = TextEditingController(text: currentValue);
@@ -179,9 +571,11 @@ class _MyInformationState extends State<MyInformation> {
                   SizedBox(width: AppConstant.getScreenSizeWidth(context) * 0.05),
                   GestureDetector(
                     onTap: () {
-                      dialogApproved();
+                      // dialogApproved();
+                     _showEditDialog2();
                     },
-                    child: const FaIcon(FontAwesomeIcons.list),
+                    child: const FaIcon(FontAwesomeIcons.edit),
+                    // child: Text('Xét duyệt'),
                   ),
                 ],
               ),
@@ -230,7 +624,7 @@ class _MyInformationState extends State<MyInformation> {
                     ),
                     RowHoSo3(
                       text1: 'Địa chỉ',
-                      icon: Icons.edit,
+                      // icon: Icons.edit,
                       text2: homeController.dcll.value,
                       onTap: () => _showEditDialog('địa chỉ', homeController.dcll.value, 'DCLL'),
                     ),
@@ -239,7 +633,7 @@ class _MyInformationState extends State<MyInformation> {
                     ),
                     RowHoSo3(
                       text1: 'Điện thoại',
-                      icon: Icons.edit,
+                      // icon: Icons.edit,
                       text2: homeController.dienThoai.value,
                       onTap: () => _showEditDialog('điện thoại', homeController.dienThoai.value, 'DienThoai'),
                     ),
@@ -247,7 +641,7 @@ class _MyInformationState extends State<MyInformation> {
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
                     ),
                     RowHoSo3(
-                      icon: Icons.edit,
+                      // icon: Icons.edit,
                       text1: 'Email',
                       text2: homeController.email.value,
                       onTap: () => _showEditDialog('email', homeController.email.value, 'Email'),
@@ -277,7 +671,7 @@ class _MyInformationState extends State<MyInformation> {
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
                     ),
                     RowHoSo3(
-                      icon: Icons.edit,
+                      // icon: Icons.edit,
                       text1: 'Tài khoản',
                       text2: homeController.taiKhoan.value,
                       onTap: () => _showEditDialog('tài khoản', homeController.taiKhoan.value, 'TaiKhoan'),
@@ -286,7 +680,7 @@ class _MyInformationState extends State<MyInformation> {
                       height: AppConstant.getScreenSizeHeight(context) * 0.02,
                     ),
                     RowHoSo3(
-                      icon: Icons.edit,
+                      // icon: Icons.edit,
                       text1: 'Ngân hàng',
                       text2: homeController.nganHang.value,
                       onTap: () => _showEditDialog('ngân hàng',homeController.nganHang.value, 'NganHang'),
@@ -396,10 +790,12 @@ class _MyInformationState extends State<MyInformation> {
 class RowHoSo3 extends StatefulWidget {
   final String text1;
   final String text2;
-  final IconData icon;
+  // final IconData icon;
   final Function()? onTap; 
 
-  const RowHoSo3({Key? key, required this.text1, required this.text2,required this.icon, this.onTap})
+  const RowHoSo3({Key? key, required this.text1, required this.text2,
+  // required this.icon, 
+  this.onTap})
       : super(key: key);
 
   @override
@@ -429,16 +825,16 @@ class _RowHoSoState extends State<RowHoSo3> {
                 style: TextStyle(fontSize: 18,),
               ),
               SizedBox(width: AppConstant.getScreenSizeWidth(context)*0.01,),
-              Column(
-                children:[
-                   Icon(
-                widget.icon,
-                size:15,
+              // Column(
+              //   children:[
+              //      Icon(
+              //   widget.icon,
+              //   size:15,
 
-              ),
-              SizedBox(height: AppConstant.getScreenSizeHeight(context)*0.015),
-                ]
-              )
+              // ),
+              // SizedBox(height: AppConstant.getScreenSizeHeight(context)*0.015),
+              //   ]
+              // )
               ]
             ),
           ),

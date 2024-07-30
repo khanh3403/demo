@@ -18,19 +18,17 @@ class NSInfoDtRepository implements INSInfoDtRepository {
   Future<NsInfo> getNhanSuInfoDt({required String ma}) async {
     try {
       final response = await provider.getNhanSuInfoDt(ma: ma);
-      if (response != null && response is List && response.isNotEmpty) {
-        final firstItem = response[0];
-        if (firstItem is Map<String, dynamic>) {
-          return NsInfo.fromJson(firstItem);
-        } else {
-          throw Exception('Invalid data format');
-        }
+      
+      print('API Response: $response');
+
+      if (response != null) {
+        return NsInfo.fromJson(response);
       } else {
         throw Exception('No data received from API');
       }
     } catch (error) {
       print('Error during API call: $error');
-      throw Exception('Error during API call: $error');
+      throw Exception('Errors during API call: $error');
     }
   }
 }

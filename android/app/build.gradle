@@ -50,9 +50,18 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'my-key-alias'
+            keyPassword 'salesoft'
+            storeFile file('/Applications/flutter source/hrm_vnpt/keys/keystore/my-release-key.jks')
+            storePassword 'salesoft'
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -69,4 +78,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'
 }
+
 apply plugin: 'com.google.gms.google-services'

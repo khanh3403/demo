@@ -4,14 +4,16 @@ class DiaDiem {
     String? ten;
     String? kinhDo;
     String? viDo;
+    int? khoangCach;
 
-    DiaDiem({this.ma, this.ten, this.kinhDo, this.viDo});
+    DiaDiem({this.ma, this.ten, this.kinhDo, this.viDo, this.khoangCach});
 
     DiaDiem.fromJson(Map<String, dynamic> json) {
         ma = json["ma"];
         ten = json["ten"];
         kinhDo = json["kinhDo"];
         viDo = json["viDo"];
+        khoangCach = json["khoangCach"];
     }
 
     Map<String, dynamic> toJson() {
@@ -20,6 +22,7 @@ class DiaDiem {
         _data["ten"] = ten;
         _data["kinhDo"] = kinhDo;
         _data["viDo"] = viDo;
+        _data["khoangCach"] = khoangCach;
         return _data;
     }
 }

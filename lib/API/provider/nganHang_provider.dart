@@ -15,7 +15,7 @@ class NganHangProviderAPI implements INganHangProvider {
       {required String table,}) async {
 
     const urlEndPoint =
-        "${URLHelper.DM_NganHang}?Table=DM_NganHang";
+        "${URLHelper.DM_LoaiNghi}?Table=DM_NganHang";
 
     return await HttpUtil().get(urlEndPoint);
   }

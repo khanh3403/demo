@@ -108,46 +108,46 @@ class _HoSoDtBodyState extends State<HoSoDtBody> {
             ),
           ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
-        const Divider(
-          thickness: 2,
-          height: 1,
-        ),
-        Container(
-          height: 60,
-          padding: const EdgeInsets.only(left: 20, top: 10),
-          child: GestureDetector(
-            onTap: () {
-              Get.toNamed(ERouter.luong_dt.name, arguments: {'ma': ma});
-            },
-            child: Row(
-              children: [
-                Image.asset(
-                  AppResource.icCash,
-                  width: AppConstant.getScreenSizeWidth(context) * 0.1,
-                  fit: BoxFit.fill,
-                  color: AppColors.orBgr,
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                const Expanded(
-                  flex: 6,
-                  child: Text(
-                    'Quá trình lương',
-                    style: TextStyle(color: AppColors.orBgr, fontSize: 18),
-                  ),
-                ),
-                const Expanded(
-                  flex: 2,
-                  child: Icon(Icons.arrow_forward_ios, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
+        // const SizedBox(
+        //   height: 10,
+        // ),
+        // const Divider(
+        //   thickness: 2,
+        //   height: 1,
+        // ),
+        // Container(
+        //   height: 60,
+        //   padding: const EdgeInsets.only(left: 20, top: 10),
+        //   child: GestureDetector(
+        //     onTap: () {
+        //       Get.toNamed(ERouter.luong_dt.name, arguments: {'ma': ma});
+        //     },
+        //     child: Row(
+        //       children: [
+        //         Image.asset(
+        //           AppResource.icCash,
+        //           width: AppConstant.getScreenSizeWidth(context) * 0.1,
+        //           fit: BoxFit.fill,
+        //           color: AppColors.orBgr,
+        //         ),
+        //         const SizedBox(
+        //           width: 15,
+        //         ),
+        //         const Expanded(
+        //           flex: 6,
+        //           child: Text(
+        //             'Quá trình lương',
+        //             style: TextStyle(color: AppColors.orBgr, fontSize: 18),
+        //           ),
+        //         ),
+        //         const Expanded(
+        //           flex: 2,
+        //           child: Icon(Icons.arrow_forward_ios, color: Colors.white),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
         const SizedBox(
           height: 10,
         ),

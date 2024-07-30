@@ -6,7 +6,6 @@ abstract class INSInfoRepository {
     required String ma,
   });
 }
-
 class NSInfoRepository implements INSInfoRepository {
   final INhanSuInfoProvider provider;
 
@@ -18,13 +17,8 @@ class NSInfoRepository implements INSInfoRepository {
   Future<NsInfo> getNhanSuInfo({required String ma}) async {
     try {
       final response = await provider.getNhanSuInfo(ma: ma);
-      if (response != null && response is List && response.isNotEmpty) {
-        final firstItem = response[0];
-        if (firstItem is Map<String, dynamic>) {
-          return NsInfo.fromJson(firstItem);
-        } else {
-          throw Exception('Invalid data format');
-        }
+      if (response != null) {
+        return response;
       } else {
         throw Exception('No data received from API');
       }

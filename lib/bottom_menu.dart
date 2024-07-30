@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:salesoft_hrm/API/provider/danhba_provider.dart';
+import 'package:salesoft_hrm/API/provider/list_chamcong_provider.dart';
+import 'package:salesoft_hrm/API/provider/thongbao_provider.dart';
 import 'package:salesoft_hrm/API/repository/danhba_repository.dart';
+import 'package:salesoft_hrm/API/repository/list_chamcong_repository.dart';
+import 'package:salesoft_hrm/API/repository/login_repository.dart';
+import 'package:salesoft_hrm/API/repository/thongbao_repository.dart';
 import 'package:salesoft_hrm/common/app_colors.dart';
 import 'package:salesoft_hrm/common/app_constant.dart';
 import 'package:salesoft_hrm/main_controller.dart';
 import 'package:salesoft_hrm/pages/DanhBa/danhba_page.dart';
 import 'package:salesoft_hrm/pages/Home/home_page.dart';
 import 'package:salesoft_hrm/pages/TaiKhoan/taikhoan_page.dart';
+import 'package:salesoft_hrm/pages/ThongBao/thongbao_page.dart';
 import 'package:salesoft_hrm/resources/app_resource.dart';
 import 'package:salesoft_hrm/widgets/inkwell_widget.dart';
 
@@ -25,7 +31,25 @@ class MainPage extends StatelessWidget {
       () => DanhBaRepository(provider: Get.find()),
       fenix: true,
     );
+     Get.lazyPut<AuthService>(
+      () => AuthService(),
+      fenix: true,
+    );
 
+    Get.lazyPut<IThongBaoProvider>(
+      () => ThongBaoProviderAPI(Get.find<AuthService>()),
+      fenix: true,
+    );
+
+    Get.lazyPut<IThongBaoRepository>(
+      () => ThongBaoRepository(provider: Get.find()),
+      fenix: true,
+    );
+     Get.lazyPut<IListChamCongProvider>(
+      () => ListChamCongProviderAPI(Get.find<AuthService>()),
+      fenix: true,
+    );
+     Get.lazyPut<IListChamCongRepository>(() => ListChamCongRepository(provider: Get.find()), fenix: true);
     return SafeArea(
       top: false,
       bottom: false,
@@ -112,7 +136,7 @@ class MainPage extends StatelessWidget {
       case 1:
         return DanhBaPage();
       case 2:
-        return Center(child: Text('Notification Page'));
+        return ThongBaoPage();
       case 3:
         return TaiKhoanPage();
       default:

@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:salesoft_hrm/API/provider/danhba_provider.dart';
 import 'package:salesoft_hrm/API/repository/danhba_repository.dart';
+import 'package:salesoft_hrm/API/repository/thongbao_repository.dart';
 import 'package:salesoft_hrm/bottom_menu.dart';
 import 'package:salesoft_hrm/main_controller.dart';
+import 'package:salesoft_hrm/model/xetduyet_model.dart';
 import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/KhenThuong&Kyluat/ktkl_detail_page.dart';
 import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/QTCongTac/congtac_detail_page.dart';
 import 'package:salesoft_hrm/pages/DanhBa/danhba_detail/Qtluong/Qtluong_detail_page.dart';
@@ -18,6 +20,7 @@ import 'package:salesoft_hrm/pages/HoSo/hoso_page.dart';
 import 'package:salesoft_hrm/pages/ChamCong/chamcong_page.dart';
 import 'package:salesoft_hrm/pages/NghiPhep/nghiphep_page.dart';
 import 'package:salesoft_hrm/pages/HoSo/DanhMucHoSo/QuanHe/quanhe_page.dart';
+import 'package:salesoft_hrm/pages/XetDuyet/xetduyet_page.dart';
 
 enum ERouter {
   mainPage,
@@ -146,10 +149,10 @@ class RouterPage {
       name: ERouter.ktkl_dt.name,
       page: () => KTKLDTPage(),
     ),
-    // GetPage(
-    //   name:ERouter.xetduyet.name,
-    //   page:()=>MapSample(),
-    // )
+    GetPage(
+      name:ERouter.xetduyet.name,
+      page:()=>XetDuyetPage(),
+    )
   ];
 }
 
@@ -164,6 +167,7 @@ class MainPageBinding extends Bindings {
       () => DanhBaRepository(provider: Get.find()),
       fenix: true,
     );
+    Get.lazyPut<IThongBaoRepository>(() => ThongBaoRepository(provider:Get.find()),fenix:true,);
     Get.put(MainController());
   }
 }

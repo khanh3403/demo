@@ -16,9 +16,7 @@ import 'package:salesoft_hrm/pages/login/login_controller.dart';
 import 'package:salesoft_hrm/resources/app_resource.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({
-    Key? key,
-  }) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -27,6 +25,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool checkToken = false;
   bool rememberMe = false;
+  bool isLoading = false;
   final controller = Get.put(LoginController());
   late TextEditingController userPasswordController;
   late TextEditingController userUserNameController;
@@ -71,147 +70,159 @@ class _LoginPageState extends State<LoginPage> {
     final mainController = Get.put(MainController());
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(AppResource.icBackground),
-              fit: BoxFit.fill,
-            ),
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: AppConstant.kSpaceHorizontalSmallExtraExtraExtra,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: AppConstant.getScreenSizeHeight(context) * 0.2),
-              Image.asset(
-                AppResource.icPMC,
-                fit: BoxFit.fitHeight,
-                height: AppConstant.getScreenSizeHeight(context) * 0.13,
+      body: GestureDetector(
+         onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(AppResource.icBackground),
+                fit: BoxFit.fill,
               ),
-              SizedBox(height: AppConstant.getScreenSizeHeight(context) * 0.03),
-              Obx(() => EditText(
-                    title: 'Mã đăng nhập',
-                    value: controller.userName.value,
-                    controllerTF: userUserNameController,
-                    onChange: (value) {
-                      controller.userName.value = value;
-                    },
-                    errorMessage: controller.userNameError.value,
-                  )),
-              AppConstant.spaceVerticalSmallMedium,
-              Obx(() => EditText(
-                    title: "Mật khẩu",
-                    value: controller.password.value,
-                    onChange: (value) {
-                      controller.password.value = value;
-                    },
-                    isHideValue: controller.getPasswordVisible(),
-                    controllerTF: userPasswordController,
-                    suffix: InkWell(
-                      onTap: () => controller.togglePassword(),
-                      child: Text(
-                        controller.passwordVisible.value ? "HIỆN" : "ẨN",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppColors.grey300,
-                            ),
-                        textAlign: TextAlign.center,
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppConstant.kSpaceHorizontalSmallExtraExtraExtra,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: AppConstant.getScreenSizeHeight(context) * 0.2),
+                Image.asset(
+                  AppResource.icPMC,
+                  fit: BoxFit.fitHeight,
+                  height: AppConstant.getScreenSizeHeight(context) * 0.13,
+                ),
+                SizedBox(height: AppConstant.getScreenSizeHeight(context) * 0.03),
+                Obx(() => EditText(
+                      title: 'Mã đăng nhập',
+                      value: controller.userName.value,
+                      controllerTF: userUserNameController,
+                      onChange: (value) {
+                        controller.userName.value = value;
+                      },
+                      errorMessage: controller.userNameError.value,
+                    )),
+                AppConstant.spaceVerticalSmallMedium,
+                Obx(() => EditText(
+                      title: "Mật khẩu",
+                      value: controller.password.value,
+                      onChange: (value) {
+                        controller.password.value = value;
+                      },
+                      isHideValue: controller.getPasswordVisible(),
+                      controllerTF: userPasswordController,
+                      suffix: InkWell(
+                        onTap: () => controller.togglePassword(),
+                        child: Text(
+                          controller.passwordVisible.value ? "HIỆN" : "ẨN",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppColors.grey300,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      errorMessage: controller.passwordError.value,
+                    )),
+                AppConstant.spaceVerticalSmallMedium,
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 6,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: rememberMe,
+                            activeColor: AppColors.blueVNPT, 
+              checkColor: Colors.white, 
+                            onChanged: (bool? value) {
+                              setState(() {
+                                rememberMe = value ?? false;
+                              });
+                              SharedPreferences.getInstance().then((pref) {
+                                if (rememberMe) {
+                                  pref.setString('username', controller.userName.value);
+                                  pref.setString('password', controller.password.value);
+                                } else {
+                                  pref.remove('username');
+                                  pref.remove('password');
+                                }
+                                pref.setBool('rememberMe', rememberMe);
+                              });
+                            },
+                          ),
+                          const Text(
+                            'Nhớ tài khoản',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ],
                       ),
                     ),
-                    errorMessage: controller.passwordError.value,
-                  )),
-              AppConstant.spaceVerticalSmallMedium,
-              const Row(
-                children: [
-                  Flexible(
-                    flex: 6,
-                    child: Row(
-                      children: [
-                        // Checkbox(
-                        //   value: rememberMe,
-                        //   onChanged: (bool? value) {
-                        //     setState(() {
-                        //       rememberMe = value ?? false;
-                        //       if (rememberMe) {
-                        //         userUserNameController.text = controller.userName.value;
-                        //         userPasswordController.text = controller.password.value;
-                        //       } else {
-                        //         userUserNameController.clear();
-                        //         userPasswordController.clear();
-                        //       }
-                        //     });
-                        //   },
-                        // ),
-                        // const Text(
-                        //   'Nhớ tài khoản',
-                        //   style: TextStyle(fontSize: 16, color: Colors.white),
-                        // ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    flex: 4,
-                    child: Text(
-                      'Quên mật khẩu?',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-              AppConstant.spaceVerticalSmallMedium,
-              CupertinoButton(
-                onPressed: () async {
-                  final username = controller.userName.value;
-                  final password = controller.password.value;
-                  if (!controller.isValidateInfo()) {
-                    controller.setErrors();
-                    return;
-                  }
-                  final authService = Get.find<AuthService>();
-                  final loggedIn = await authService.login(username, password);
-                  if (loggedIn) {
-                    controller.clearPassword();
-                    userPasswordController.clear();
-                    Get.find<HomeController>().fetchUserInfo();
-                    mainController.pageIndex.value = 0;
-                    Get.snackbar('Thông báo', 'Đăng nhập thành công.',
-                        snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blueVNPT);
-                    _loginOnClick(context);
-                    await postToken(username, deviceToken.value);
-                    if (checkToken == true) {
-                      SharedPreferences pref = await SharedPreferences.getInstance();
-                      checkToken = await pref.setString('deviceToken', deviceToken.value);
-                    } else {
-                      print('đã lưu token');
-                    }
-
-                    if (rememberMe) {
-                      SharedPreferences pref = await SharedPreferences.getInstance();
-                      await pref.setString('mq', username);
-                      await pref.setString('mk', password);
-                      await pref.setBool('rememberMe', rememberMe);
-                    } else {
-                      SharedPreferences pref = await SharedPreferences.getInstance();
-                      await pref.remove('rememberMe');
-                    }
-                  } else {
-                    _showPermissionDeniedDialog(context);
-                  }
-                },
-                color: AppColors.blueVNPT,
-                // padding: const EdgeInsets.symmetric(
-                //   horizontal: AppConstant.kSpac
-                // ),
-                child: const Text(
-                  'Đăng nhập',
-                  style: TextStyle(color: Colors.white, fontSize: 17),
+                  ],
                 ),
-              ),
-              
-            ],
+                AppConstant.spaceVerticalSmallMedium,
+                isLoading 
+                    ? Center(child: CircularProgressIndicator())
+                    : CupertinoButton(
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true; 
+                          });
+                          final username = controller.userName.value;
+                          final password = controller.password.value;
+                          if (!controller.isValidateInfo()) {
+                            controller.setErrors();
+                            setState(() {
+                              isLoading = false; 
+                            });
+                            return;
+                          }
+                          final authService = Get.find<AuthService>();
+                          final loggedIn = await authService.login(username, password);
+                          setState(() {
+                            isLoading = false; 
+                          });
+                          if (loggedIn) {
+                            controller.clearPassword();
+                            userPasswordController.clear();
+                            Get.find<HomeController>().fetchUserInfo();
+                            mainController.pageIndex.value = 0;
+                            Get.snackbar('Thông báo', 'Đăng nhập thành công.',
+                                snackPosition: SnackPosition.TOP, backgroundColor: AppColors.blueVNPT);
+                            _loginOnClick(context);
+                            await postToken(username, deviceToken.value);
+                            if (checkToken) {
+                              SharedPreferences pref = await SharedPreferences.getInstance();
+                              checkToken = await pref.setString('deviceToken', deviceToken.value);
+                            } else {
+                              print('đã lưu token');
+                            }
+        
+                            if (rememberMe) {
+                              SharedPreferences pref = await SharedPreferences.getInstance();
+                              await pref.setString('username', username);
+                              await pref.setString('password', password);
+                              await pref.setBool('rememberMe', rememberMe);
+                            } else {
+                              SharedPreferences pref = await SharedPreferences.getInstance();
+                              await pref.remove('rememberMe');
+                              await pref.remove('username');
+                              await pref.remove('password');
+                            }
+                          } else {
+                            _showPermissionDeniedDialog(context);
+                          }
+                        },
+                        color: AppColors.blueVNPT,
+                        child: const Text(
+                          'Đăng nhập',
+                          style: TextStyle(color: Colors.white, fontSize: 17),
+                        ),
+                      ),
+              ],
+            ),
           ),
         ),
       ),

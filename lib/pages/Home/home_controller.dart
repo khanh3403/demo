@@ -4,8 +4,6 @@ import 'package:salesoft_hrm/API/provider/nhansu_provider.dart';
 import 'package:salesoft_hrm/API/repository/NS_Infomation.dart';
 import 'package:salesoft_hrm/API/repository/NS_Update_repository.dart';
 import 'package:salesoft_hrm/API/repository/login_repository.dart';
-import 'package:salesoft_hrm/model/NSInfo_model.dart';
-import 'package:salesoft_hrm/API/api_config/http_util.dart';
 
 class HomeController extends GetxController {
   final NSInfoRepository _nsInfoRepository =

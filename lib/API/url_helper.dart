@@ -15,7 +15,6 @@ class URLHelper {
   static const String NS_qlLuong = "NhanSuQTL/GetListByCode";
   static const String NS_InforUpdate = "NhanSu/Update";  
   static const String NS_NotApproved ="NhanSu/CheckExistsUpdate";
-  static const String DM_NganHang="DanhMuc/GetList";
   static const String NS_Token="Token/Create";
   static const String DM_DiaDiem="DiaDiem/GetListByCode";
   static const String DM_CaLam="CaLamViec/GetListByCode";
@@ -23,4 +22,10 @@ class URLHelper {
   static const String NS_ChamCong="ChamCong/Create";
   static const String NS_CheckVao="ChamCong/CheckNhanSuCheckIn";
   static const String NS_CheckRa="ChamCong/CheckNhanSuCheckOut";
+  static const String NS_UpdateNS="NhanSu/Update";
+  static const String NS_ThongBao="ThongBao/GetList";
+  static const String DM_LoaiNghi="DanhMuc/GetList";
+  static const String DM_NghiPhep="NghiPhep/GetListByDate";
+  static const String NS_ListChamCong="ChamCong/GetList";
+  static const String NS_XetDuyet="XetDuyet/GetList";
 }

@@ -29,11 +29,11 @@ class DanhBaPage extends StatelessWidget {
         SizedBox(
           height: AppConstant.getScreenSizeHeight(context) * 0.05,
         ),
-        
         const SizedBox(height: 30),
         Container(
-          padding: EdgeInsets.only(left: AppConstant.getScreenSizeWidth(context) * 0.02),
-            width: AppConstant.getScreenSizeWidth(context) * 0.98,
+          padding: EdgeInsets.only(
+              left: AppConstant.getScreenSizeWidth(context) * 0.02),
+          width: AppConstant.getScreenSizeWidth(context) * 0.98,
           child: SearchBar(
             controller: searchController,
             hintText: 'Tìm kiếm...',
@@ -63,6 +63,7 @@ class DanhBaPage extends StatelessWidget {
                       ten: contentDisplay?.data?[index].ten,
                       phongban: contentDisplay?.data?[index].phongBan,
                       email: contentDisplay?.data?[index].email,
+                      dienThoai: contentDisplay?.data?[index].dienThoai,
                       gioiTinh: contentDisplay?.data?[index].gioiTinh,
                       ma: contentDisplay?.data?[index].ma,
                       onTap: (ma) {

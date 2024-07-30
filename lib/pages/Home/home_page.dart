@@ -24,8 +24,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeController _homeController = Get.put(HomeController());
   bool isPressed = false;
+  bool isLoading =false;
 
   Future<Position> getUserCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -78,9 +78,13 @@ Future<bool> _onWillPop() async {
       ),
     ) ?? false;
   }
-  @override
+  Widget _buildLoadingIndicator() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Container(
@@ -100,63 +104,77 @@ Future<bool> _onWillPop() async {
                 children: [
                   AnimatedButton(
                     onTap: () async {
-                      getUserCurrentLocation().then((value)async{
+                      setState(() {
+                        isLoading = true; 
+                      });
+
+                      await getUserCurrentLocation().then((value) {
                         Get.toNamed(ERouter.chamCong.name);
+                      }).catchError((error) {
+                      }).whenComplete(() {
+                        setState(() {
+                          isLoading = false;
+                        });
                       });
                     },
                     width: AppConstant.getScreenSizeWidth(context) / 1.06,
                     height: AppConstant.getScreenSizeHeight(context) * 0.15,
                     color: AppColors.blueVNPT,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: AppConstant.getScreenSizeWidth(context) * 0.05,
-                        ),
-                        Container(
-                          width: AppConstant.getScreenSizeWidth(context) * 0.2,
-                          height: AppConstant.getScreenSizeWidth(context) * 0.2,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: ClipOval(
-                            child: Transform.scale(
-                              scale: 0.7,
-                              child: Image.asset(
-                                AppResource.icTap,
-                                fit: BoxFit.cover,
+                    child: isLoading 
+                        ? _buildLoadingIndicator()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: AppConstant.getScreenSizeWidth(context) * 0.05,
                               ),
-                            ),
+                              Container(
+                                width: AppConstant.getScreenSizeWidth(context) * 0.2,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                child: ClipOval(
+                                  child: Transform.scale(
+                                    scale: 0.7,
+                                    child: Image.asset(
+                                      AppResource.icTap,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: AppConstant.getScreenSizeWidth(context) * 0.03,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Chấm công',
+                                    style: TextStyle(
+                                      color: AppColors.orBgr,
+                                      fontSize: AppConstant.getScreenSizeWidth(context) * 0.056,
+                                    ),
+                                  ),
+                                  Text(
+                                    'để bắt đầu công việc ngay',
+                                    style: TextStyle(
+                                      color: AppColors.orBgr,
+                                      fontSize: AppConstant.getScreenSizeWidth(context) * 0.035,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          width: AppConstant.getScreenSizeWidth(context) * 0.03,
-                        ),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Chấm công',
-                              style:
-                                  TextStyle(color: AppColors.orBgr, fontSize: 24),
-                            ),
-                            Text(
-                              'để bắt đầu công việc ngay',
-                              style:
-                                  TextStyle(color: AppColors.orBgr, fontSize: 18),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
                   ),
                   SizedBox(
                     height: AppConstant.getScreenSizeHeight(context) * 0.03,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    padding:  EdgeInsets.only(left:AppConstant.getScreenSizeWidth(context)*0.027, right: AppConstant.getScreenSizeWidth(context)*0.027),
                     child: Row(
                       children: [
                         Expanded(
@@ -172,21 +190,19 @@ Future<bool> _onWillPop() async {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(
-                                  height: 15,
+                                SizedBox(
+                                  height: AppConstant.getScreenSizeHeight(context) * 0.018,
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      left: AppConstant.getScreenSizeHeight(
+                                      left: AppConstant.getScreenSizeWidth(
                                               context) *
-                                          0.022,
-                                      top: AppConstant.getScreenSizeWidth(
-                                              context) *
-                                          0.0003),
-                                  child: const FaIcon(
+                                          0.04,
+                                      ),
+                                  child: FaIcon(
                                     FontAwesomeIcons.solidIdCard,
                                     color: AppColors.blueVNPT2,
-                                    size: 50,
+                                    size: AppConstant.getScreenSizeWidth(context)*0.11,
                                   ),
                                 ),
                                 SizedBox(
@@ -196,67 +212,61 @@ Future<bool> _onWillPop() async {
                                 ),
                                 Padding(
                                     padding: EdgeInsets.only(
-                                      left: AppConstant.getScreenSizeHeight(
+                                      left: AppConstant.getScreenSizeWidth(
                                               context) *
-                                          0.022,
+                                          0.04,
                                     ),
-                                    child: const Text('Hồ sơ',
-                                        style: TextStyle(fontSize: 20))),
+                                    child:  Text('Hồ sơ',
+                                        style: TextStyle(fontSize: AppConstant.getScreenSizeWidth(context)*0.04))),
                               ],
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: AppConstant.getScreenSizeHeight(context) * 0.01,
+                          width: AppConstant.getScreenSizeWidth(context) * 0.023,
                         ),
-                        Expanded(
+                         Expanded(
                           flex: 4,
                           child: AnimatedButton(
-                            onTap: () {
-                              // Get.toNamed(ERouter.hoSo.name);
+                           onTap: () {
+                              Get.toNamed(ERouter.nghiPhep.name);
                             },
                             width: AppConstant.getScreenSizeWidth(context) / 2.3,
                             height:
                                 AppConstant.getScreenSizeHeight(context) * 0.15,
                             color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        left: AppConstant.getScreenSizeHeight(
-                                                context) *
-                                            0.014,
-                                        top: AppConstant.getScreenSizeWidth(
-                                                context) *
-                                            0.02),
-                                    
-                                    child: const FaIcon(
-                                      FontAwesomeIcons.umbrellaBeach,
-                                      color: AppColors.blueVNPT2,
-                                      size: 50,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height:
-                                        AppConstant.getScreenSizeHeight(context) *
-                                            0.018,
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.only(       
-                                        left: AppConstant.getScreenSizeHeight(
-                                                context) *
-                                            0.01,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: AppConstant.getScreenSizeHeight(context) * 0.018,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: AppConstant.getScreenSizeWidth(
+                                              context) *
+                                          0.04,
                                       ),
-                                      child: const Text('Đăng ký nghỉ',
-                                          style: TextStyle(fontSize: 20))),
-                                ],
-                              ),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.umbrellaBeach,
+                                    color: AppColors.blueVNPT2,
+                                    size: AppConstant.getScreenSizeWidth(context)*0.11,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      AppConstant.getScreenSizeHeight(context) *
+                                          0.022,
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                      left: AppConstant.getScreenSizeWidth(
+                                              context) *
+                                          0.04,
+                                    ),
+                                    child:  Text('Đăng ký nghỉ',
+                                        style: TextStyle(fontSize: AppConstant.getScreenSizeWidth(context)*0.04))),
+                              ],
                             ),
                           ),
                         ),
@@ -267,10 +277,10 @@ Future<bool> _onWillPop() async {
                     height: AppConstant.getScreenSizeHeight(context) * 0.01,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    padding:EdgeInsets.only(left:AppConstant.getScreenSizeWidth(context)*0.027, right: AppConstant.getScreenSizeWidth(context)*0.027),
                     child: Row(
                       children: [
-                        Expanded(
+                           Expanded(
                           flex: 4,
                           child: AnimatedButton(
                             onTap: () {
@@ -282,18 +292,19 @@ Future<bool> _onWillPop() async {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  height: AppConstant.getScreenSizeHeight(context) * 0.018,
+                                ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                    left:
-                                        AppConstant.getScreenSizeHeight(context) *
-                                            0.02,
-                                    top: AppConstant.getScreenSizeWidth(context) *
-                                        0.03,
-                                  ),
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.sackDollar,
+                                      left: AppConstant.getScreenSizeWidth(
+                                              context) *
+                                          0.04,
+                                      ),
+                                  child: FaIcon(
+                                     FontAwesomeIcons.sackDollar,
                                     color: AppColors.blueVNPT2,
-                                    size: 50,
+                                    size: AppConstant.getScreenSizeWidth(context)*0.11,
                                   ),
                                 ),
                                 SizedBox(
@@ -303,20 +314,20 @@ Future<bool> _onWillPop() async {
                                 ),
                                 Padding(
                                     padding: EdgeInsets.only(
-                                      left: AppConstant.getScreenSizeHeight(
+                                      left: AppConstant.getScreenSizeWidth(
                                               context) *
-                                          0.022,
+                                          0.04,
                                     ),
-                                    child: const Text('Bảng lương',
-                                        style: TextStyle(fontSize: 20))),
+                                    child:  Text('Bảng lương',
+                                        style: TextStyle(fontSize: AppConstant.getScreenSizeWidth(context)*0.04))),
                               ],
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: AppConstant.getScreenSizeHeight(context) * 0.01,
+                         width: AppConstant.getScreenSizeWidth(context) * 0.023,
                         ),
-                        Expanded(
+                       Expanded(
                           flex: 4,
                           child: AnimatedButton(
                             onTap: () {
@@ -329,36 +340,35 @@ Future<bool> _onWillPop() async {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  height: AppConstant.getScreenSizeHeight(context) * 0.018,
+                                ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      left: AppConstant.getScreenSizeHeight(
+                                      left: AppConstant.getScreenSizeWidth(
                                               context) *
-                                          0.03,
-                                      top: AppConstant.getScreenSizeWidth(
-                                              context) *
-                                          0.025),
-                                  child: Image.asset(
+                                          0.04,
+                                      ),
+                                   child: Image.asset(
                                     AppResource.icApproval,
                                     fit: BoxFit.fill,
                                     color: AppColors.blueVNPT2,
-                                    width:
-                                        AppConstant.getScreenSizeWidth(context) *
-                                            0.12,
+                                    width: AppConstant.getScreenSizeWidth(context)*0.11,
                                   ),
                                 ),
                                 SizedBox(
                                   height:
                                       AppConstant.getScreenSizeHeight(context) *
-                                          0.02,
+                                          0.022,
                                 ),
                                 Padding(
                                     padding: EdgeInsets.only(
-                                      left: AppConstant.getScreenSizeHeight(
+                                      left: AppConstant.getScreenSizeWidth(
                                               context) *
-                                          0.022,
+                                          0.04,
                                     ),
-                                    child: const Text('Xét duyệt',
-                                        style: TextStyle(fontSize: 20))),
+                                    child:  Text('Xét duyệt',
+                                        style: TextStyle(fontSize: AppConstant.getScreenSizeWidth(context)*0.04))),
                               ],
                             ),
                           ),
@@ -410,19 +420,19 @@ Future<bool> _onWillPop() async {
                           SizedBox(
                             width: AppConstant.getScreenSizeWidth(context) * 0.03,
                           ),
-                          const Column(
+                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 'Hỗ trợ',
                                 style: TextStyle(
-                                    color: AppColors.orBgr, fontSize: 24),
+                                    color: AppColors.orBgr, fontSize:AppConstant.getScreenSizeWidth(context) * 0.056),
                               ),
                               Text(
                                 'hỗ trợ phần mềm 24/7',
                                 style: TextStyle(
-                                    color: AppColors.orBgr, fontSize: 18),
+                                    color: AppColors.orBgr, fontSize: AppConstant.getScreenSizeWidth(context) * 0.035),
                               )
                             ],
                           ),
@@ -467,9 +477,9 @@ class _TitleAppBarWidget extends StatelessWidget {
                 child: Center(
                   child: Text(
                     homeController.kh.value,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24,
+                      fontSize:  AppConstant.getScreenSizeWidth(context)*0.06,
                     ),
                   ),
                 ),
@@ -482,15 +492,15 @@ class _TitleAppBarWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Xin chào!',
-                style: TextStyle(color: AppColors.orBgr, fontSize: 18),
+                style: TextStyle(color: AppColors.orBgr, fontSize: AppConstant.getScreenSizeWidth(context)*0.038,),
               ),
               Obx(() => Text(
                 '${homeController.hoDem.value} ${homeController.ten.value}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.orBgr,
-                  fontSize: 20,
+                  fontSize: AppConstant.getScreenSizeWidth(context)*0.048,
                   fontWeight: FontWeight.bold,
                 ),
               )),
